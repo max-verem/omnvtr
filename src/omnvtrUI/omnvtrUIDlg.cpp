@@ -642,6 +642,7 @@ void ComnvtrUIDlg::oper_record_record()
     WaitForSingleObject(m_director.lock, INFINITE);
     if(m_director.status_curr.state == omPlrStateCueRecord)
     {
+        ReleaseMutex(m_director.lock);
         if(theApp.cmdInfo.m_syncplay_omneon_player[0] &&
             theApp.cmdInfo.m_syncplay_omneon_host[0])
         {
@@ -662,6 +663,7 @@ void ComnvtrUIDlg::oper_record_record()
                 Sleep(theApp.cmdInfo.m_syncplay_delay);
             }
         };
+        WaitForSingleObject(m_director.lock, INFINITE);
         OmPlrRecord(m_director.handle);
     };
     ReleaseMutex(m_director.lock);

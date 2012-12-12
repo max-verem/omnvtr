@@ -68,5 +68,6 @@ public:
     afx_msg LRESULT OnMCS3Shuttle(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnMCS3Button(WPARAM wParam, LPARAM lParam);
     afx_msg void OnBnClickedButtonExport();
+    afx_msg BOOL ComnvtrUIDlg::OnOperButton(unsigned int id);
 };
 

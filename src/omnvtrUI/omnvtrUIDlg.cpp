@@ -142,6 +142,14 @@ BEGIN_MESSAGE_MAP(ComnvtrUIDlg, CDialog)
     ON_MESSAGE(ID_MCS3_JOG, OnMCS3Jog)
     ON_MESSAGE(ID_MCS3_SHUTTLE, OnMCS3Shuttle)
     ON_BN_CLICKED(IDC_BUTTON_EXPORT, &ComnvtrUIDlg::OnBnClickedButtonExport)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_MARK_IN, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_BACKWARD, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_STEP_B, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_STOP, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_PLAY, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_STEP_F, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_FORWARD, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_MARK_OUT, &ComnvtrUIDlg::OnOperButton)
 END_MESSAGE_MAP()
 
 static char* OmPlrState_text(enum OmPlrState state)
@@ -839,3 +847,45 @@ BOOL ComnvtrUIDlg::PreTranslateMessage(MSG* pMsg)
     return TRUE;
 };
 
+BOOL ComnvtrUIDlg::OnOperButton(unsigned int id)
+{
+    switch(id)
+    {
+        case IDC_BUTTON_OPER_MARK_IN:
+            oper_mark_in();
+            break;
+
+        case IDC_BUTTON_OPER_BACKWARD:
+            oper_backward();
+            break;
+
+        case IDC_BUTTON_OPER_STEP_B:
+            WaitForSingleObject(m_director.lock, INFINITE);
+            OmPlrStep(m_director.handle, -1);
+            ReleaseMutex(m_director.lock);
+            break;
+
+        case IDC_BUTTON_OPER_STOP:
+            oper_stop();
+            break;
+
+        case IDC_BUTTON_OPER_PLAY:
+            oper_play();
+            break;
+
+        case IDC_BUTTON_OPER_STEP_F:
+            WaitForSingleObject(m_director.lock, INFINITE);
+            OmPlrStep(m_director.handle, 1);
+            ReleaseMutex(m_director.lock);
+            break;
+
+        case IDC_BUTTON_OPER_FORWARD:
+            oper_forward();
+            break;
+
+        case IDC_BUTTON_OPER_MARK_OUT:
+            oper_mark_out();
+            break;
+    };
+    return TRUE;
+};

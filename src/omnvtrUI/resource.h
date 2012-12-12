@@ -22,7 +22,16 @@
 #define IDC_COMBO_TYPES                 1013
 #define IDC_PROGRESS_COPY               1014
 #define IDC_BUTTON_EXPORT               1015
-#define IDC_BUTTON_EXPORT2              1016
+#define IDC_BUTTON_OPER_MARK_IN         1016
+#define IDC_BUTTON_OPER_BACKWARD        1017
+#define IDC_BUTTON_OPER_STEP_B          1018
+#define IDC_BUTTON_OPER_MARK_OUT        1019
+#define IDC_BUTTON_OPER_FORWARD         1020
+#define IDC_BUTTON_STEP_F               1021
+#define IDC_BUTTON_OPER_STEP_F          1021
+#define IDC_BUTTON_OPER_STOP            1022
+#define IDC_BUTTON_OPER_PLAY            1023
+#define IDC_BUTTON9                     1024
 
 // Next default values for new objects
 // 
@@ -30,7 +39,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1016
+#define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

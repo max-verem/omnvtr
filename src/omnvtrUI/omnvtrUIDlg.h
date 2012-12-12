@@ -24,6 +24,7 @@ public:
         int mark_in, mark_out, mark_curr;
         int record_id;
         int jog_accum, jog_step;
+        int keys;
     } m_director;
 
 // Dialog Data
@@ -33,6 +34,15 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 // Implementation
+    void oper_mark_in();
+    void oper_mark_out();
+    void oper_stop();
+    void oper_play();
+    void oper_backward();
+    void oper_forward();
+    void oper_record_record();
+    void oper_cue_record();
+
 protected:
 	HICON m_hIcon;
     void ui_load_clip(int f_new);
@@ -47,6 +57,7 @@ protected:
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+    afx_msg BOOL PreTranslateMessage(MSG* pMsg);
 	DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedButtonExit();

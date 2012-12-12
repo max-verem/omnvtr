@@ -302,6 +302,7 @@ BOOL ComnvtrUIDlg::OnInitDialog()
     m_director.f_first = 0;
     m_director.record_id = 0;
     m_director.jog_step = 60;
+    m_director.keys = 0;
 
     /* setup dir label */
     char buf[1024];
@@ -550,11 +551,149 @@ LRESULT ComnvtrUIDlg::OnMCS3Shuttle(WPARAM wParam, LPARAM lParam)
 
     return 0;
 }
-LRESULT ComnvtrUIDlg::OnMCS3Button(WPARAM wParam, LPARAM lParam)
+
+void ComnvtrUIDlg::oper_mark_in()
 {
-    int r, button = wParam;
+    char buf[1024];
+
+    if(m_director.status_curr.state == omPlrStatePlay)
+        SET_TEXT(CEdit, IDC_EDIT_MARK_IN,
+            tc_frames2txt(m_director.mark_in = m_director.status_curr.pos, buf));
+};
+
+void ComnvtrUIDlg::oper_mark_out()
+{
+    char buf[1024];
+
+    if(m_director.status_curr.state == omPlrStatePlay)
+        SET_TEXT(CEdit, IDC_EDIT_MARK_OUT,
+            tc_frames2txt(m_director.mark_out = m_director.status_curr.pos, buf));
+};
+
+void ComnvtrUIDlg::oper_stop()
+{
+    WaitForSingleObject(m_director.lock, INFINITE);
+    if(m_director.status_curr.state == omPlrStatePlay)
+        OmPlrPlay(m_director.handle, 0.0);
+    else
+        OmPlrStop(m_director.handle);
+    ReleaseMutex(m_director.lock);
+};
+
+void ComnvtrUIDlg::oper_play()
+{
+    WaitForSingleObject(m_director.lock, INFINITE);
+    if(m_director.status_curr.state == omPlrStatePlay)
+        OmPlrPlay(m_director.handle, 1.0);
+    ReleaseMutex(m_director.lock);
+};
+
+void ComnvtrUIDlg::oper_backward()
+{
+    WaitForSingleObject(m_director.lock, INFINITE);
+    if(m_director.status_curr.state == omPlrStatePlay)
+    {
+        double s;
+
+        if(m_director.status_curr.rate >= 0)
+            s = -1.0;
+        else
+            s = 2.0 * m_director.status_curr.rate;
+
+        OmPlrPlay(m_director.handle, s);
+    };
+    ReleaseMutex(m_director.lock);
+}
+
+void ComnvtrUIDlg::oper_forward()
+{
+    WaitForSingleObject(m_director.lock, INFINITE);
+    if(m_director.status_curr.state == omPlrStatePlay)
+    {
+        double s;
+
+        if(m_director.status_curr.rate <= 0)
+            s = 1.0;
+        else
+            s = 2.0 * m_director.status_curr.rate;
+
+        OmPlrPlay(m_director.handle, s);
+    };
+    ReleaseMutex(m_director.lock);
+}
+
+void ComnvtrUIDlg::oper_record_record()
+{
+    WaitForSingleObject(m_director.lock, INFINITE);
+    if(m_director.status_curr.state == omPlrStateCueRecord)
+        OmPlrRecord(m_director.handle);
+    ReleaseMutex(m_director.lock);
+};
+
+void ComnvtrUIDlg::oper_cue_record()
+{
+    int r;
     char buf[1024];
     unsigned int l;
+
+    WaitForSingleObject(m_director.lock, INFINITE);
+    if
+    (
+        (m_director.status_curr.state == omPlrStatePlay) &&
+        (m_director.id[0] || m_director.f_new) &&
+        m_director.mark_in >= 0
+    )
+    {
+        window_lock(0, "preparing to record...");
+
+        /* create a time id */
+        time((time_t*)&m_director.record_id);
+
+        /* compose new id */
+        _snprintf(buf, sizeof(buf), "%s-%d", m_director.id, m_director.record_id);
+
+        /* save curr pos */
+        m_director.mark_curr = m_director.status_curr.pos;
+
+        /* 1. stop */
+        OmPlrStop(m_director.handle);
+        OmPlrDetachAllClips(m_director.handle);
+
+        /* 2. remove from server */
+        OmPlrClipDelete(m_director.handle, buf);
+
+        /* 3. attach the new clip */
+        r = OmPlrAttach
+        (
+            m_director.handle,
+            buf,                    /* pClipName */
+            0,                      /* clipIn */
+            25*3600,                /* clipOut */ 
+            0,                      /* attachBeforeClip */
+            omPlrShiftModeAfter,    /* shift */
+            &l                      /* *pClipAttachHandle */
+        );
+
+        /* 4. setup MIN/MAX positions of timeline */
+        OmPlrSetMinPosMin(m_director.handle);
+        OmPlrSetMaxPosMax(m_director.handle);
+
+        /* 5. setup start pos */
+        r = OmPlrSetPos(m_director.handle, 0);
+
+        /* 6. cue record */
+        r = OmPlrCueRecord(m_director.handle);
+
+        ReleaseMutex(m_director.lock);
+
+        window_lock(1);
+    };
+    ReleaseMutex(m_director.lock);
+}
+
+LRESULT ComnvtrUIDlg::OnMCS3Button(WPARAM wParam, LPARAM lParam)
+{
+    int button = wParam;
 
     /* ignore relase button */
     if(!lParam) return 0;
@@ -563,102 +702,32 @@ LRESULT ComnvtrUIDlg::OnMCS3Button(WPARAM wParam, LPARAM lParam)
     switch(button)
     {
         case MCS3_BUTTON_MARK_IN:
-            if(m_director.status_curr.state == omPlrStatePlay)
-                SET_TEXT(CEdit, IDC_EDIT_MARK_IN,
-                    tc_frames2txt(m_director.mark_in = m_director.status_curr.pos, buf));
+            oper_mark_in();
             break;
 
         case MCS3_BUTTON_MARK_OUT:
-            if(m_director.status_curr.state == omPlrStatePlay)
-                SET_TEXT(CEdit, IDC_EDIT_MARK_OUT,
-                    tc_frames2txt(m_director.mark_out = m_director.status_curr.pos, buf));
+            oper_mark_out();
             break;
 
         case MCS3_BUTTON_STOP:
-            WaitForSingleObject(m_director.lock, INFINITE);
-            if(m_director.status_curr.state == omPlrStatePlay)
-                OmPlrPlay(m_director.handle, 0.0);
-            else
-                OmPlrStop(m_director.handle);
-            ReleaseMutex(m_director.lock);
+            oper_stop();
             break;
 
         case MCS3_BUTTON_PLAY:
-            WaitForSingleObject(m_director.lock, INFINITE);
-            if(m_director.status_curr.state == omPlrStatePlay)
-                OmPlrPlay(m_director.handle, 1.0);
-            ReleaseMutex(m_director.lock);
+            oper_play();
             break;
 
         case MCS3_BUTTON_BACKWARD:
-            WaitForSingleObject(m_director.lock, INFINITE);
-            if(m_director.status_curr.state == omPlrStatePlay)
-                OmPlrPlay(m_director.handle, -5.0);
-            ReleaseMutex(m_director.lock);
+            oper_backward();
             break;
 
         case MCS3_BUTTON_FORWARD:
-            WaitForSingleObject(m_director.lock, INFINITE);
-            if(m_director.status_curr.state == omPlrStatePlay)
-                OmPlrPlay(m_director.handle, 5.0);
-            ReleaseMutex(m_director.lock);
+            oper_forward();
             break;
 
         case MCS3_BUTTON_RECORD:
-            WaitForSingleObject(m_director.lock, INFINITE);
-            if(m_director.status_curr.state == omPlrStateCueRecord)
-                OmPlrRecord(m_director.handle);
-            if
-            (
-                (m_director.status_curr.state == omPlrStatePlay) &&
-                (m_director.id[0] || m_director.f_new) &&
-                m_director.mark_in >= 0
-            )
-            {
-                window_lock(0, "preparing to record...");
-
-                /* create a time id */
-                time((time_t*)&m_director.record_id);
-
-                /* compose new id */
-                _snprintf(buf, sizeof(buf), "%s-%d", m_director.id, m_director.record_id);
-
-                /* save curr pos */
-                m_director.mark_curr = m_director.status_curr.pos;
-
-                /* 1. stop */
-                OmPlrStop(m_director.handle);
-                OmPlrDetachAllClips(m_director.handle);
-
-                /* 2. remove from server */
-                OmPlrClipDelete(m_director.handle, buf);
-
-                /* 3. attach the new clip */
-                r = OmPlrAttach
-                (
-                    m_director.handle,
-                    buf,                    /* pClipName */
-                    0,                      /* clipIn */
-                    25*3600,                /* clipOut */ 
-                    0,                      /* attachBeforeClip */
-                    omPlrShiftModeAfter,    /* shift */
-                    &l                      /* *pClipAttachHandle */
-                );
-
-                /* 4. setup MIN/MAX positions of timeline */
-                OmPlrSetMinPosMin(m_director.handle);
-                OmPlrSetMaxPosMax(m_director.handle);
-
-                /* 5. setup start pos */
-                r = OmPlrSetPos(m_director.handle, 0);
-
-                /* 6. cue record */
-                r = OmPlrCueRecord(m_director.handle);
-
-                ReleaseMutex(m_director.lock);
-
-                window_lock(1);
-            };
+            oper_record_record();
+            oper_cue_record();
             break;
         };
 
@@ -681,3 +750,92 @@ void ComnvtrUIDlg::OnBnClickedButtonExport()
 
     dlg.DoModal();
 }
+
+BOOL ComnvtrUIDlg::PreTranslateMessage(MSG* pMsg)
+{
+    if(pMsg->message != WM_KEYDOWN && pMsg->message != WM_KEYUP)
+        return CDialog::PreTranslateMessage(pMsg);
+
+    if(pMsg->message == WM_KEYUP)
+    {
+        if(pMsg->wParam != 'W')
+            return CDialog::PreTranslateMessage(pMsg);
+
+        m_director.keys = 0;
+
+        return TRUE;
+    };
+
+    switch(pMsg->wParam)
+    {
+        case 'W':
+            m_director.keys = 1;
+            break;
+
+        case 'I':
+            oper_mark_in();
+            break;
+
+        case 'O':
+            oper_mark_out();
+            break;
+
+        case VK_ESCAPE:
+            oper_stop();
+            break;
+
+        case ' ':
+        case 'S':
+            WaitForSingleObject(m_director.lock, INFINITE);
+            if(m_director.status_curr.state == omPlrStatePlay)
+            {
+                if(0.0 == m_director.status_curr.rate)
+                    OmPlrPlay(m_director.handle, 1.0);
+                else
+                    OmPlrPlay(m_director.handle, 0.0);
+            }
+            else if(m_director.status_curr.state == omPlrStateCueRecord)
+                OmPlrRecord(m_director.handle);
+            else if(m_director.status_curr.state == omPlrStateRecord)
+                OmPlrStop(m_director.handle);
+            ReleaseMutex(m_director.lock);
+            break;
+
+        case 'A':
+            if(m_director.keys)
+            {
+                WaitForSingleObject(m_director.lock, INFINITE);
+                OmPlrStep(m_director.handle, -1);
+                ReleaseMutex(m_director.lock);
+            }
+            else
+            {
+                oper_backward();
+            };
+            break;
+
+        case 'D':
+            if(m_director.keys)
+            {
+                WaitForSingleObject(m_director.lock, INFINITE);
+                OmPlrStep(m_director.handle, 1);
+                ReleaseMutex(m_director.lock);
+            }
+            else
+            {
+                oper_forward();
+            };
+            break;
+
+        case 'R':
+            oper_record_record();
+            oper_cue_record();
+            break;
+
+        default:
+            return CDialog::PreTranslateMessage(pMsg);
+    };
+
+    return TRUE;
+};
+

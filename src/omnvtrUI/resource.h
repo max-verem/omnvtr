@@ -17,12 +17,12 @@
 #define IDC_BUTTON_LOAD                 1008
 #define IDC_STATIC_INFO1                1009
 #define IDC_EDIT_INPUT_ID               1010
-#define IDC_EDIT1                       1011
 #define IDC_EDIT_ID                     1011
 #define IDC_COMBO_DIRS                  1012
 #define IDC_COMBO_TYPES                 1013
 #define IDC_PROGRESS_COPY               1014
 #define IDC_BUTTON_EXPORT               1015
+#define IDC_BUTTON_EXPORT2              1016
 
 // Next default values for new objects
 // 

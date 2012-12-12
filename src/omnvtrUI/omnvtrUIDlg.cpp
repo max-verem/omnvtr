@@ -330,6 +330,31 @@ BOOL ComnvtrUIDlg::OnInitDialog()
 
     SET_TEXT(CStatic, IDC_STATIC_INFO1, "Load existing clip or create new");
 
+    //Create the ToolTip control
+    if(m_ToolTip.Create(this))
+    {
+        unsigned int ids[] =
+        {
+            IDC_BUTTON_OPER_MARK_IN,
+            IDC_BUTTON_OPER_BACKWARD,
+            IDC_BUTTON_OPER_STEP_B,
+            IDC_BUTTON_OPER_STOP,
+            IDC_BUTTON_OPER_PLAY,
+            IDC_BUTTON_OPER_STEP_F,
+            IDC_BUTTON_OPER_FORWARD,
+            IDC_BUTTON_OPER_MARK_OUT,
+            IDC_BUTTON_OPER_RECORD,
+            IDC_BUTTON_NEW,
+            IDC_BUTTON_LOAD,
+            IDC_BUTTON_EXPORT,
+            IDC_BUTTON_EXIT,
+            0
+        };
+        for(int i = 0; ids[i]; i++)
+            m_ToolTip.AddTool(GetDlgItem(ids[i]), ids[i]);
+        m_ToolTip.Activate(TRUE);
+    }
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -792,6 +817,8 @@ void ComnvtrUIDlg::OnBnClickedButtonExport()
 
 BOOL ComnvtrUIDlg::PreTranslateMessage(MSG* pMsg)
 {
+    m_ToolTip.RelayEvent(pMsg);
+
     if(pMsg->message != WM_KEYDOWN && pMsg->message != WM_KEYUP)
         return CDialog::PreTranslateMessage(pMsg);
 

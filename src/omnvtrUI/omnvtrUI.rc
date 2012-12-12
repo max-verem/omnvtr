@@ -100,7 +100,7 @@ BEGIN
     LTEXT           "Select file type:",IDC_STATIC,7,57,302,8
     COMBOBOX        IDC_COMBO_DIRS,7,42,302,30,CBS_DROPDOWNLIST | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_COMBO_TYPES,7,66,302,30,CBS_DROPDOWNLIST | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_PROGRESS_COPY,"msctls_progress32",PBS_SMOOTH | PBS_SMOOTHREVERSE | WS_BORDER,7,91,302,14
+    CONTROL         "",IDC_PROGRESS_COPY,"msctls_progress32",PBS_SMOOTH | WS_BORDER,7,91,302,14
 END
 
 
@@ -129,6 +129,29 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDC_BUTTON_OPER_MARK_IN "Mark In (I)"
+    IDC_BUTTON_OPER_BACKWARD "Fast backward (A)"
+    IDC_BUTTON_OPER_STEP_B "Step back (W-S)"
+    IDC_BUTTON_OPER_STOP "Stop (Space/S)"
+    IDC_BUTTON_OPER_PLAY "Play (Space/S)"
+    IDC_BUTTON_OPER_STEP_F "Step forward (W-D)"
+    IDC_BUTTON_OPER_FORWARD "Fast forward"
+    IDC_BUTTON_OPER_MARK_OUT "Mark out"
+    IDC_BUTTON_NEW "Start with NEW Clip id"
+    IDC_BUTTON_LOAD "Load existing clip"
+    IDC_BUTTON_EXPORT "Export to new clip"
+    IDC_BUTTON_EXIT "Exit from software"
+    IDC_BUTTON_OPER_RECORD "Start record"
+END
 
 #endif    // Ukrainian resources
 /////////////////////////////////////////////////////////////////////////////

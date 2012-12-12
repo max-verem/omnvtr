@@ -45,6 +45,7 @@ public:
 
 protected:
 	HICON m_hIcon;
+    CToolTipCtrl m_ToolTip;
     void ui_load_clip(int f_new);
     void load_clip(int pos);
     void window_lock(int l, char* msg = "");

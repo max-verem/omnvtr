@@ -318,6 +318,8 @@ BOOL ComnvtrUIDlg::OnInitDialog()
     /* run timer */
     SetTimer(2, 40, NULL);
 
+    SET_TEXT(CStatic, IDC_STATIC_INFO1, "Load existing clip or create new");
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

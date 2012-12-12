@@ -641,7 +641,29 @@ void ComnvtrUIDlg::oper_record_record()
 {
     WaitForSingleObject(m_director.lock, INFINITE);
     if(m_director.status_curr.state == omPlrStateCueRecord)
+    {
+        if(theApp.cmdInfo.m_syncplay_omneon_player[0] &&
+            theApp.cmdInfo.m_syncplay_omneon_host[0])
+        {
+            int r;
+            OmPlrHandle h;
+
+            /* open director */
+            r = OmPlrOpen
+            (
+                theApp.cmdInfo.m_syncplay_omneon_host,
+                theApp.cmdInfo.m_syncplay_omneon_player,
+                &h
+            );
+            if(!r)
+            {
+                OmPlrPlay(h, 1.0);
+                OmPlrClose(h);
+                Sleep(theApp.cmdInfo.m_syncplay_delay);
+            }
+        };
         OmPlrRecord(m_director.handle);
+    };
     ReleaseMutex(m_director.lock);
 };
 

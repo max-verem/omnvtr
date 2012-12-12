@@ -16,10 +16,13 @@ public:
     int check_params();
 
     char
+        m_syncplay_omneon_host[MAX_LEN_CONF_PARAM],
+        m_syncplay_omneon_player[MAX_LEN_CONF_PARAM],
         m_omneon_host[MAX_LEN_CONF_PARAM],
         m_omneon_player[MAX_LEN_CONF_PARAM],
         m_omneon_dir[MAX_LEN_CONF_PARAM],
         m_omneon_dirs[MAX_OMNEON_DIRS][MAX_LEN_CONF_PARAM];
     int m_omneon_dirs_cnt;
     int m_msc3_serial_port;
+    int m_syncplay_delay;
 };

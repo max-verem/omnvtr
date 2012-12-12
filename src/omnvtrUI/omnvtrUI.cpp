@@ -6,6 +6,7 @@
 #include "omnvtrUI.h"
 #include "omnvtrUIDlg.h"
 #include "../mcs3/mcs3.h"
+#include <Mmsystem.h>
 
 extern void ComnvtrUIDlg_mcs3(void* cookie, int button, int value);
 
@@ -13,6 +14,7 @@ extern void ComnvtrUIDlg_mcs3(void* cookie, int button, int value);
 #define new DEBUG_NEW
 #endif
 
+#pragma comment(lib, "Winmm.lib")
 
 // ComnvtrUIApp
 
@@ -40,6 +42,8 @@ ComnvtrUIApp theApp;
 BOOL ComnvtrUIApp::InitInstance()
 {
     int r, i;
+
+    timeBeginPeriod(1);
 
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable

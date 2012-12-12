@@ -6,9 +6,11 @@ extern ComnvtrUIApp theApp;
 
 ComnvtrUICmdLine::ComnvtrUICmdLine(void)
 {
+    m_syncplay_omneon_host[0] = m_syncplay_omneon_player[0] =
     m_omneon_host[0] = m_omneon_player[0] = m_omneon_dir[0] = 0;
     m_msc3_serial_port = -1;
     m_omneon_dirs_cnt = 0;
+    m_syncplay_delay = 0;
 }
 
 ComnvtrUICmdLine::~ComnvtrUICmdLine(void)
@@ -22,7 +24,10 @@ enum ComnvtrUICmdLineOpts
     opt_omneon_host,
     opt_omneon_player,
     opt_omneon_dir,
-    opt_export_dir
+    opt_export_dir,
+    opt_syncplay_omneon_host,
+    opt_syncplay_omneon_player,
+    opt_syncplay_delay
 };
 
 static struct
@@ -36,6 +41,9 @@ static struct
     {"omneon_player",       opt_omneon_player},
     {"omneon_dir",          opt_omneon_dir},
     {"export_dir",          opt_export_dir},
+    {"syncplay_omneon_host", opt_syncplay_omneon_host},
+    {"syncplay_omneon_player", opt_syncplay_omneon_player},
+    {"syncplay_delay",      opt_syncplay_delay},
     {NULL,                  opt_none}
 };
 
@@ -74,6 +82,9 @@ void ComnvtrUICmdLine::ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast)
             case opt_omneon_player:
             case opt_omneon_dir:
             case opt_export_dir:
+            case opt_syncplay_omneon_host:
+            case opt_syncplay_omneon_player:
+            case opt_syncplay_delay:
                 if(bLast)
                 {
                     MessageBox
@@ -97,7 +108,12 @@ void ComnvtrUICmdLine::ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast)
                 m_msc3_serial_port = atol((char*)pszParam);
                 opt = opt_none;
                 break;
-
+            case opt_syncplay_omneon_host:  buf = m_omneon_host; break;
+            case opt_syncplay_omneon_player:buf = m_omneon_host; break;
+            case opt_syncplay_delay:
+                m_syncplay_delay = atol((char*)pszParam);
+                opt = opt_none;
+                break;
             case opt_omneon_host:           buf = m_omneon_host; break;
             case opt_omneon_player:         buf = m_omneon_player; break;
             case opt_omneon_dir:            buf = m_omneon_dir; break;

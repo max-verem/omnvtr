@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "omnvtr", "omnvtr.vcproj", "{13FF28AD-59C2-45B0-AF59-44D065C44087}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D2962261-800A-4FD8-8707-29E81B60F705} = {D2962261-800A-4FD8-8707-29E81B60F705}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcs3", "msc3.vcproj", "{D2962261-800A-4FD8-8707-29E81B60F705}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "omnvtrUI", "omnvtrUI.vcproj", "{3CFDEF7B-D34F-4A9B-97E6-2F02FD8D01F0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "omnvtr_edt", "omnvtr_edt.vcproj", "{13FF28AD-59C2-45B0-AF59-44D065C44088}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13FF28AD-59C2-45B0-AF59-44D065C44087}.Debug|Win32.ActiveCfg = Debug|Win32
+		{13FF28AD-59C2-45B0-AF59-44D065C44087}.Debug|Win32.Build.0 = Debug|Win32
+		{13FF28AD-59C2-45B0-AF59-44D065C44087}.Release|Win32.ActiveCfg = Release|Win32
+		{13FF28AD-59C2-45B0-AF59-44D065C44087}.Release|Win32.Build.0 = Release|Win32
+		{D2962261-800A-4FD8-8707-29E81B60F705}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D2962261-800A-4FD8-8707-29E81B60F705}.Debug|Win32.Build.0 = Debug|Win32
+		{D2962261-800A-4FD8-8707-29E81B60F705}.Release|Win32.ActiveCfg = Release|Win32
+		{D2962261-800A-4FD8-8707-29E81B60F705}.Release|Win32.Build.0 = Release|Win32
+		{3CFDEF7B-D34F-4A9B-97E6-2F02FD8D01F0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3CFDEF7B-D34F-4A9B-97E6-2F02FD8D01F0}.Debug|Win32.Build.0 = Debug|Win32
+		{3CFDEF7B-D34F-4A9B-97E6-2F02FD8D01F0}.Release|Win32.ActiveCfg = Release|Win32
+		{3CFDEF7B-D34F-4A9B-97E6-2F02FD8D01F0}.Release|Win32.Build.0 = Release|Win32
+		{13FF28AD-59C2-45B0-AF59-44D065C44088}.Debug|Win32.ActiveCfg = Debug|Win32
+		{13FF28AD-59C2-45B0-AF59-44D065C44088}.Debug|Win32.Build.0 = Debug|Win32
+		{13FF28AD-59C2-45B0-AF59-44D065C44088}.Release|Win32.ActiveCfg = Release|Win32
+		{13FF28AD-59C2-45B0-AF59-44D065C44088}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

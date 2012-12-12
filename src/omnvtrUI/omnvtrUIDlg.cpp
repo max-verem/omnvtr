@@ -674,15 +674,8 @@ void ComnvtrUIDlg::OnBnClickedButtonExport()
 {
     ExportDlg dlg;
 
-#if 0
-    if
-    (
-        (m_director.f_new || !m_director.id[0])
-        ||
-        (m_director.mark_in < 0 && m_director.mark_out < 0)
-    )
+    if(m_director.f_new || !m_director.id[0])
         return;
-#endif
 
     dlg.DoModal();
 }

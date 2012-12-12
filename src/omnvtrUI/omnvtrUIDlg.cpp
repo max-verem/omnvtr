@@ -150,6 +150,7 @@ BEGIN_MESSAGE_MAP(ComnvtrUIDlg, CDialog)
     ON_COMMAND_EX(IDC_BUTTON_OPER_STEP_F, &ComnvtrUIDlg::OnOperButton)
     ON_COMMAND_EX(IDC_BUTTON_OPER_FORWARD, &ComnvtrUIDlg::OnOperButton)
     ON_COMMAND_EX(IDC_BUTTON_OPER_MARK_OUT, &ComnvtrUIDlg::OnOperButton)
+    ON_COMMAND_EX(IDC_BUTTON_OPER_RECORD, &ComnvtrUIDlg::OnOperButton)
 END_MESSAGE_MAP()
 
 static char* OmPlrState_text(enum OmPlrState state)
@@ -480,6 +481,12 @@ HBRUSH ComnvtrUIDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     int id = pWnd->GetDlgCtrlID();
 
     HBRUSH h = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    if(id == IDC_EDIT_POS && m_director.status_curr.state == omPlrStateRecord)
+    {
+        pDC->SetBkColor(RGB(127, 0, 1));
+        pDC->SetTextColor(RGB(255, 255, 255));
+    };
 
     if(id == IDC_EDIT_MARK_IN || id == IDC_EDIT_MARK_OUT)
     {
@@ -885,6 +892,11 @@ BOOL ComnvtrUIDlg::OnOperButton(unsigned int id)
 
         case IDC_BUTTON_OPER_MARK_OUT:
             oper_mark_out();
+            break;
+
+        case IDC_BUTTON_OPER_RECORD:
+            oper_record_record();
+            oper_cue_record();
             break;
     };
     return TRUE;

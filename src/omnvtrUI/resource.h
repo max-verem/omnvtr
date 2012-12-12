@@ -27,11 +27,11 @@
 #define IDC_BUTTON_OPER_STEP_B          1018
 #define IDC_BUTTON_OPER_MARK_OUT        1019
 #define IDC_BUTTON_OPER_FORWARD         1020
-#define IDC_BUTTON_STEP_F               1021
 #define IDC_BUTTON_OPER_STEP_F          1021
 #define IDC_BUTTON_OPER_STOP            1022
 #define IDC_BUTTON_OPER_PLAY            1023
 #define IDC_BUTTON9                     1024
+#define IDC_BUTTON_OPER_RECORD          1024
 
 // Next default values for new objects
 // 

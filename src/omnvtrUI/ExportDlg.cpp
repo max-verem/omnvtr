@@ -52,14 +52,16 @@ BOOL ExportDlg::OnInitDialog()
     combo_dirs->SetCurSel(0);
 
     combo_types->SetItemData(combo_types->AddString("Reference Copy (pure reference)"), omReferenceCopy);
-    combo_types->SetItemData(combo_types->AddString("FlattenedWithDiscreteMedia (reference with copy)"), omFlattenedWithDiscreteMedia);
+    combo_types->SetItemData(combo_types->AddString("Flattened With DiscreteMedia (reference with copy)"), omFlattenedWithDiscreteMedia);
     combo_types->SetItemData(combo_types->AddString("Flattened With Embedded Media (self-contained)"), omFlattenedWithEmbeddedMedia);
     combo_types->SetCurSel(0);
 
     /* run timer */
     SetTimer(2, 40, NULL);
 
-    return TRUE;
+    GetDlgItem(IDC_EDIT_ID)->SetFocus();
+
+    return FALSE;
 }
 
 void ExportDlg::OnTimer(UINT nIDEvent)

@@ -28,6 +28,12 @@ void CIDInputDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_INPUT_ID, m_id_val);
 }
 
+BOOL CIDInputDlg::OnInitDialog()
+{
+    CDialog::OnInitDialog();
+    GetDlgItem(IDC_EDIT_INPUT_ID)->SetFocus();
+    return FALSE;
+}
 
 BEGIN_MESSAGE_MAP(CIDInputDlg, CDialog)
 END_MESSAGE_MAP()

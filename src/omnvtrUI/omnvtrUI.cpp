@@ -76,19 +76,20 @@ BOOL ComnvtrUIApp::InitInstance()
         return FALSE;
 
     /* connect to MCS3 */
-    if(mcs3_open(&m_mcs3, cmdInfo.m_msc3_serial_port) < 0)
+    m_mcs3 = NULL;
+    if(mcs3_open(&m_mcs3, cmdInfo.m_msc3_serial_port))
     {
         MessageBox(GetMainWnd()->GetSafeHwnd(),
             "Failed to open serial port for MSC3", "ERROR!" ,
             MB_OK | MB_ICONEXCLAMATION);
-        return FALSE;
     };
 
     ComnvtrUIDlg dlg;
     m_pMainWnd = &dlg;
 
     /* setup callback of MCS3 */
-    mcs3_callback(m_mcs3, ComnvtrUIDlg_mcs3, &dlg);
+    if(m_mcs3)
+        mcs3_callback(m_mcs3, ComnvtrUIDlg_mcs3, &dlg);
 
     /* open director */
     r = OmPlrOpen
@@ -128,7 +129,8 @@ BOOL ComnvtrUIApp::InitInstance()
     dlg.m_director.f_online = 0;
 
     INT_PTR nResponse = dlg.DoModal();
-    mcs3_close(m_mcs3);
+    if(m_mcs3)
+        mcs3_close(m_mcs3);
     OmPlrClose(dlg.m_director.handle);
     CloseHandle(dlg.m_director.lock);
 

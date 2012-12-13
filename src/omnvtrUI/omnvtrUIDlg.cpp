@@ -355,6 +355,9 @@ BOOL ComnvtrUIDlg::OnInitDialog()
         m_ToolTip.Activate(TRUE);
     }
 
+    times.CreatePointFont(140, "Arial");
+    GetDlgItem(IDC_EDIT_POS)->SetFont(&times);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

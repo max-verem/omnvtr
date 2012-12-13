@@ -13,7 +13,7 @@ class ComnvtrUIDlg : public CDialog
 // Construction
 public:
 	ComnvtrUIDlg(CWnd* pParent = NULL);	// standard constructor
-
+    CFont times;
     struct
     {
         OmPlrHandle handle;

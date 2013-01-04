@@ -191,6 +191,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\omnvtrUI\EDLFile.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\omnvtrUI\ExportDlg.cpp"
 				>
 			</File>
@@ -208,6 +212,10 @@
 			</File>
 			<File
 				RelativePath=".\src\omnvtrUI\omnvtrUIDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrUI\ReelSelectDlg.cpp"
 				>
 			</File>
 			<File
@@ -241,6 +249,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\omnvtrUI\EDLFile.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\omnvtrUI\ExportDlg.h"
 				>
 			</File>
@@ -258,6 +270,10 @@
 			</File>
 			<File
 				RelativePath=".\src\omnvtrUI\omnvtrUIDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrUI\ReelSelectDlg.h"
 				>
 			</File>
 			<File

@@ -7,6 +7,7 @@
 #include "ExportDlg.h"
 
 #include <ommedia.h>
+#pragma comment(lib, "ommedia.lib")
 
 // ExportDlg dialog
 
@@ -174,7 +175,7 @@ void ExportDlg::OnOK()
     /* request selected args */
     char* target_dir = theApp.cmdInfo.m_omneon_dirs[combo_dirs->GetItemData(combo_dirs->GetCurSel())];
     enum OmMediaCopyType t = (enum OmMediaCopyType)combo_types->GetItemData(combo_types->GetCurSel());
-
+#if 0
     /* build filenames */
     _snprintf
     (
@@ -192,7 +193,7 @@ void ExportDlg::OnOK()
         id_selected,
         "mov"
     );
-
+#endif
     OmMediaCopier* omcp = new OmMediaCopier();
 #ifdef _DEBUG
     omcp->setDebug("c:\\temp\\omnvtr.log1");

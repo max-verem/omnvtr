@@ -15,80 +15,6 @@
 #define new DEBUG_NEW
 #endif
 
-#include <ommedia.h>
-
-#pragma comment(lib, "ommedia.lib")
-
-static int omn_concat_videos
-(
-    char* omn_host,
-    char* omn_dir,
-    char* id,
-    int f_new,
-    int record_id,
-    int mark_in,
-    int mark_out,
-    char* ext
-)
-{
-    int r, d = 0;
-    OmMediaCopier omc;
-    OmMediaInfo omi;
-    OmMediaSummary oms;
-    OmMediaQuery omq;
-    char id_origin[256], id_recorded[256], id_target[256];
-
-#ifdef _DEBUG
-    omc.setDebug("c:\\temp\\omnvtr.log1");
-#endif
-
-    /* build filenames */
-    _snprintf(id_origin, sizeof(id_origin),
-        "\\\\%s%s/%s.%s", omn_host, omn_dir, id, ext);
-    _snprintf(id_recorded, sizeof(id_recorded),
-        "\\\\%s%s/%s-%d.%s", omn_host, omn_dir, id, record_id, ext);
-    _snprintf(id_target, sizeof(id_target),
-        "\\\\%s%s/%s-temp.%s", omn_host, omn_dir, id, ext);
-
-    omc.setDestination(id_target, 1);
-
-    /* append first segment */
-    if(!f_new && mark_in)
-    {
-        r = omc.appendTracks(0, id_origin, 0, mark_in);
-        d += mark_in;
-    };
-
-    /* append recorded segment */
-    r = omc.appendTracks(0, id_recorded);
-    r = omq.setFile(id_recorded);
-    r = omq.getMovieInfo(omi);
-    d += omi.defaultOut - omi.defaultIn;
-
-    /* append last segment */
-    if(mark_out >= 0)
-    {
-        r = omc.appendTracks(0, id_origin, mark_out, ~0);
-        r = omq.setFile(id_origin);
-        r = omq.getMovieInfo(omi);
-        d += omi.defaultOut - omi.defaultIn - mark_out;
-    };
-
-    omc.setOutputSuffix(omMediaFileTypeQt, ext);
-    omc.setCopyType(omReferenceCopy);
-    r = omc.setRange(0, d);
-    r = omc.copy();
-    omc.release();
-
-    /* cleanup files */
-    r = DeleteFile(id_origin);
-    r = MoveFile(id_target, id_origin);
-    r = DeleteFile(id_recorded);
-
-    return 0;
-};
-
-
 // ComnvtrUIDlg dialog
 
 #define SET_TEXT(TYPE, ID, TEXT) \
@@ -134,8 +60,6 @@ BEGIN_MESSAGE_MAP(ComnvtrUIDlg, CDialog)
 	//}}AFX_MSG_MAP
     ON_BN_CLICKED(IDC_BUTTON_EXIT, &ComnvtrUIDlg::OnBnClickedButtonExit)
     ON_WM_TIMER()
-    ON_BN_CLICKED(IDC_BUTTON_NEW, &ComnvtrUIDlg::OnBnClickedButtonNew)
-    ON_BN_CLICKED(IDC_BUTTON_LOAD, &ComnvtrUIDlg::OnBnClickedButtonLoad)
     ON_EN_UPDATE(IDC_EDIT_MARK_IN, &ComnvtrUIDlg::OnEnUpdateEditMarkIn)
     ON_WM_CTLCOLOR()
     ON_MESSAGE(ID_MCS3_BUTTON, OnMCS3Button)
@@ -198,16 +122,6 @@ void ComnvtrUIDlg::OnTimer(UINT nIDEvent)
             strcpy(buf, OmPlrState_text(m_director.status_curr.state));
         SET_TEXT(CStatic, IDC_STATIC_STATUS, buf);
 
-        if(m_director.id[0])
-        {
-            SET_TEXT(CStatic, IDC_STATIC_VIDEO_ID, m_director.id);
-        }
-        else
-        {
-            _snprintf(buf, sizeof(buf), "*%s*", m_director.status_curr.currClipName);
-            SET_TEXT(CStatic, IDC_STATIC_VIDEO_ID, buf);
-        };
-
         _snprintf(buf, sizeof(buf), "%.2f", m_director.status_curr.rate);
         SET_TEXT(CStatic, IDC_STATIC_SPEED, buf);
 
@@ -233,7 +147,7 @@ void ComnvtrUIDlg::OnTimer(UINT nIDEvent)
 
             /* delete recorded id */
             OmPlrDetachAllClips(m_director.handle);
-            _snprintf(buf, sizeof(buf), "%s-%d", m_director.id, m_director.record_id);
+            _snprintf(buf, sizeof(buf), "%d", m_director.record_id);
             OmPlrClipDelete(m_director.handle, buf);
 
             /* load clip and seek to pos */
@@ -250,25 +164,23 @@ void ComnvtrUIDlg::OnTimer(UINT nIDEvent)
             m_director.record_id
         )
         {
-            window_lock(0, "creating files...");
-
+            char buf[1024];
+            OmPlrClipInfo clip_info;
             OmPlrDetachAllClips(m_director.handle);
 
-            /* concat id */
-            omn_concat_videos
-            (
-                theApp.cmdInfo.m_omneon_host,
-                theApp.cmdInfo.m_omneon_dir,
-                m_director.id,
-                m_director.f_new,
-                m_director.record_id,
-                m_director.mark_in,
-                m_director.mark_out,
-                "mov"
-            );
+            window_lock(0, "recreating playlist...");
 
-            /* load clip and seek to pos */
-            m_director.f_new = 0;
+            _snprintf(buf, sizeof(buf), "%d", m_director.record_id);
+            clip_info.maxMsTracks = 0;
+            clip_info.size = sizeof(clip_info);
+            r = OmPlrClipGetInfo(m_director.handle, (LPCSTR)buf, &clip_info);
+
+            edl->add
+            (
+                m_director.mark_in, m_director.mark_out,
+                m_director.record_id,
+                clip_info.defaultIn, clip_info.defaultOut
+            );
 
             /* load clip and seek to pos */
             load_clip(m_director.mark_in + m_director.status_curr.pos);
@@ -307,7 +219,6 @@ BOOL ComnvtrUIDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 
     /* clear */
-    m_director.id[0] = 0;
     m_director.f_first = 0;
     m_director.record_id = 0;
     m_director.jog_step = 60;
@@ -318,17 +229,15 @@ BOOL ComnvtrUIDlg::OnInitDialog()
     _snprintf
     (
         buf, sizeof(buf),
-        "%s@%s%s",
+        "[%s] on %s@%s",
+        theApp.cmdInfo.m_edl,
         theApp.cmdInfo.m_omneon_player,
-        theApp.cmdInfo.m_omneon_host,
-        theApp.cmdInfo.m_omneon_dir
+        theApp.cmdInfo.m_omneon_host
     );
     SetWindowText(buf);
 
     /* run timer */
     SetTimer(2, 40, NULL);
-
-    SET_TEXT(CStatic, IDC_STATIC_INFO1, "Load existing clip or create new");
 
     //Create the ToolTip control
     if(m_ToolTip.Create(this))
@@ -344,8 +253,6 @@ BOOL ComnvtrUIDlg::OnInitDialog()
             IDC_BUTTON_OPER_FORWARD,
             IDC_BUTTON_OPER_MARK_OUT,
             IDC_BUTTON_OPER_RECORD,
-            IDC_BUTTON_NEW,
-            IDC_BUTTON_LOAD,
             IDC_BUTTON_EXPORT,
             IDC_BUTTON_EXIT,
             0
@@ -357,6 +264,18 @@ BOOL ComnvtrUIDlg::OnInitDialog()
 
     times.CreatePointFont(140, "Arial");
     GetDlgItem(IDC_EDIT_POS)->SetFont(&times);
+
+    GetDlgItem(IDC_STATIC_VIDEO_ID)->SetWindowText(theApp.cmdInfo.m_edl);
+
+    /* init EDL object */
+    edl = new CEDLFile
+    (
+        theApp.cmdInfo.m_omneon_host,
+        theApp.cmdInfo.m_omneon_dir,
+        theApp.cmdInfo.m_edl
+    );
+
+    load_clip(0);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -405,7 +324,7 @@ void ComnvtrUIDlg::OnBnClickedButtonExit()
 
 void ComnvtrUIDlg::load_clip(int pos)
 {
-    int r;
+    int r, i;
     unsigned int l;
 
     WaitForSingleObject(m_director.lock, INFINITE);
@@ -414,17 +333,23 @@ void ComnvtrUIDlg::load_clip(int pos)
     OmPlrStop(m_director.handle);
     OmPlrDetachAllClips(m_director.handle);
 
-    if(!m_director.f_new)
+    for(i = 0; i < edl->count(); i++)
+    {
+        char buf[512];
+
+        _snprintf(buf, sizeof(buf), "%d", edl->id(i));
+
         OmPlrAttach
         (
             m_director.handle,
-            m_director.id,
-            omPlrClipDefaultIn,
-            omPlrClipDefaultOut,
+            buf,
+            edl->mark_in(i),
+            edl->mark_out(i),
             0,
             omPlrShiftModeAfter,
             &l
         );
+    };
 
     /* 4. Set timeline min/max */
     r = OmPlrSetMinPosMin(m_director.handle);
@@ -442,49 +367,6 @@ void ComnvtrUIDlg::load_clip(int pos)
     m_director.record_id = 0;
 
     ReleaseMutex(m_director.lock);
-};
-
-void ComnvtrUIDlg::ui_load_clip(int f_new)
-{
-    if(!m_director.f_online)
-        return;
-
-    int r;
-    CIDInputDlg dlg;
-    OmPlrClipInfo clip_info;
-
-    if (dlg.DoModal() == IDOK)
-    {
-        /* get clip info */
-        WaitForSingleObject(m_director.lock, INFINITE);
-        clip_info.maxMsTracks = 0;
-        clip_info.size = sizeof(clip_info);
-        r = OmPlrClipGetInfo(m_director.handle,
-            (LPCSTR)dlg.m_id_val, &clip_info);
-        ReleaseMutex(m_director.lock);
-
-        if(r && !f_new)
-        {
-            MessageBox("ID NOT FOUND", "Error");
-            return;
-        }
-        if(!r && f_new)
-        {
-            MessageBox("ID ALREADY EXIST", "Error");
-            return;
-        }
-
-        /* setup data */
-        strcpy(m_director.id, (LPCSTR)dlg.m_id_val);
-        m_director.f_new = f_new;
-
-        window_lock(0, "loading clip...");
-
-        /* load clip */
-        load_clip(0);
-
-        window_lock(1);
-    };
 };
 
 #define RED        RGB(127,  0,  0)
@@ -707,7 +589,6 @@ void ComnvtrUIDlg::oper_cue_record()
     if
     (
         (m_director.status_curr.state == omPlrStatePlay) &&
-        (m_director.id[0] || m_director.f_new) &&
         m_director.mark_in >= 0
     )
     {
@@ -717,7 +598,7 @@ void ComnvtrUIDlg::oper_cue_record()
         time((time_t*)&m_director.record_id);
 
         /* compose new id */
-        _snprintf(buf, sizeof(buf), "%s-%d", m_director.id, m_director.record_id);
+        _snprintf(buf, sizeof(buf), "%d", m_director.record_id);
 
         /* save curr pos */
         m_director.mark_curr = m_director.status_curr.pos;
@@ -811,9 +692,6 @@ void ComnvtrUIDlg::window_lock(int l, char* msg)
 void ComnvtrUIDlg::OnBnClickedButtonExport()
 {
     ExportDlg dlg;
-
-    if(m_director.f_new || !m_director.id[0])
-        return;
 
     dlg.DoModal();
 }

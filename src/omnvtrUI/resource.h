@@ -6,6 +6,7 @@
 #define IDD_IDINPUTDLG                  103
 #define IDR_MAINFRAME                   128
 #define IDD_EXPORTDLG                   129
+#define IDD_REELSELECT                  130
 #define IDC_BUTTON_EXIT                 1000
 #define IDC_EDIT_MARK_IN                1001
 #define IDC_EDIT_MARK_OUT               1002
@@ -26,6 +27,8 @@
 #define IDC_BUTTON_OPER_BACKWARD        1017
 #define IDC_BUTTON_OPER_STEP_B          1018
 #define IDC_BUTTON_OPER_MARK_OUT        1019
+#define IDC_COMBO1                      1019
+#define IDC_COMBO_REELNAME              1019
 #define IDC_BUTTON_OPER_FORWARD         1020
 #define IDC_BUTTON_OPER_STEP_F          1021
 #define IDC_BUTTON_OPER_STOP            1022
@@ -37,9 +40,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        130
+#define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "EDLFile.h"
 #include <omplrclnt.h>
 #pragma comment(lib, "omplrlib.lib") 
 
@@ -19,13 +19,14 @@ public:
         OmPlrHandle handle;
         HANDLE lock;
         OmPlrStatus status_curr, status_prev;
-        int f_online, f_new, f_first;
-        char id[1023];
+        int f_online, f_first;
         int mark_in, mark_out, mark_curr;
         int record_id;
         int jog_accum, jog_step;
         int keys;
     } m_director;
+
+    CEDLFile* edl;
 
 // Dialog Data
 	enum { IDD = IDD_OMNVTRUI_DIALOG };
@@ -46,7 +47,6 @@ public:
 protected:
 	HICON m_hIcon;
     CToolTipCtrl m_ToolTip;
-    void ui_load_clip(int f_new);
     void load_clip(int pos);
     void window_lock(int l, char* msg = "");
 
@@ -62,8 +62,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedButtonExit();
-    afx_msg void OnBnClickedButtonNew(){ ui_load_clip(1); };
-    afx_msg void OnBnClickedButtonLoad(){ ui_load_clip(0); };
     afx_msg void OnEnUpdateEditMarkIn();
     afx_msg LRESULT OnMCS3Jog(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnMCS3Shuttle(WPARAM wParam, LPARAM lParam);

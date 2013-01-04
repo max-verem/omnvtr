@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "omnvtrUI.h"
 #include "omnvtrUIDlg.h"
+#include "ReelSelectDlg.h"
 #include "../mcs3/mcs3.h"
 #include <Mmsystem.h>
 
@@ -75,64 +76,85 @@ BOOL ComnvtrUIApp::InitInstance()
     if(0 != cmdInfo.check_params())
         return FALSE;
 
-    /* connect to MCS3 */
-    m_mcs3 = NULL;
-    if(mcs3_open(&m_mcs3, cmdInfo.m_msc3_serial_port))
+    /* check mode */
+    if(!cmdInfo.m_mode)
     {
-        MessageBox(GetMainWnd()->GetSafeHwnd(),
-            "Failed to open serial port for MSC3", "ERROR!" ,
-            MB_OK | MB_ICONEXCLAMATION);
+        OmPlrHandle handle;
+
+        /* edl (reel) select dialog */
+        {
+            CReelSelectDlg d1;
+//            m_pMainWnd = &d1;
+            r = d1.DoModal();
+        };
+
+        if(r != IDOK)
+            return FALSE;
+
+        /* connect to MCS3 */
+        m_mcs3 = NULL;
+        if(mcs3_open(&m_mcs3, cmdInfo.m_msc3_serial_port))
+        {
+            MessageBox(GetMainWnd()->GetSafeHwnd(),
+                "Failed to open serial port for MSC3", "ERROR!" ,
+                MB_OK | MB_ICONEXCLAMATION);
+        };
+
+        /* open director */
+        r = OmPlrOpen
+        (
+            cmdInfo.m_omneon_host,
+            cmdInfo.m_omneon_player,
+            &handle
+        );
+        if(0 != r)
+        {
+            MessageBox(GetMainWnd()->GetSafeHwnd(),
+                "Failed connect to Omneon", "ERROR!" ,
+                MB_OK | MB_ICONEXCLAMATION);
+            return FALSE;
+        };
+        /* replace slashes for path due to micrecognize of slash */
+        for(r = 0; 0 != cmdInfo.m_omneon_dir[r]; r++)
+            if('\\' == cmdInfo.m_omneon_dir[r])
+                cmdInfo.m_omneon_dir[r] = '/';
+        for(i = 0; i < cmdInfo.m_omneon_dirs_cnt; i++)
+            for(r = 0; 0 != cmdInfo.m_omneon_dirs[i][r]; r++)
+                if('\\' == cmdInfo.m_omneon_dirs[i][r])
+                    cmdInfo.m_omneon_dirs[i][r] = '/';
+
+        /* setup directory */
+        r = OmPlrClipSetDirectory(handle, cmdInfo.m_omneon_dir);
+        if(0 != r)
+        {
+            OmPlrClose(handle);
+            MessageBox(GetMainWnd()->GetSafeHwnd(),
+                "Failed connect to change directory on Omneon", "ERROR!" ,
+                MB_OK | MB_ICONEXCLAMATION);
+            return FALSE;
+        };
+
+        {
+            ComnvtrUIDlg dlg;
+            m_pMainWnd = &dlg;
+
+            dlg.m_director.handle = handle;
+
+            /* setup callback of MCS3 */
+            if(m_mcs3)
+                mcs3_callback(m_mcs3, ComnvtrUIDlg_mcs3, &dlg);
+
+            /* create lock */
+            dlg.m_director.lock = CreateMutex(NULL, FALSE, NULL);
+            dlg.m_director.f_online = 0;
+            r = dlg.DoModal();
+            CloseHandle(dlg.m_director.lock);
+        };
+
+        if(m_mcs3)
+            mcs3_close(m_mcs3);
+        OmPlrClose(handle);
     };
-
-    ComnvtrUIDlg dlg;
-    m_pMainWnd = &dlg;
-
-    /* setup callback of MCS3 */
-    if(m_mcs3)
-        mcs3_callback(m_mcs3, ComnvtrUIDlg_mcs3, &dlg);
-
-    /* open director */
-    r = OmPlrOpen
-    (
-        cmdInfo.m_omneon_host,
-        cmdInfo.m_omneon_player,
-        &dlg.m_director.handle
-    );
-    if(0 != r)
-    {
-        MessageBox(GetMainWnd()->GetSafeHwnd(),
-            "Failed connect to Omneon", "ERROR!" ,
-            MB_OK | MB_ICONEXCLAMATION);
-        return FALSE;
-    };
-    /* replace slashes for path due to micrecognize of slash */
-    for(r = 0; 0 != cmdInfo.m_omneon_dir[r]; r++)
-        if('\\' == cmdInfo.m_omneon_dir[r])
-            cmdInfo.m_omneon_dir[r] = '/';
-    for(i = 0; i < cmdInfo.m_omneon_dirs_cnt; i++)
-        for(r = 0; 0 != cmdInfo.m_omneon_dirs[i][r]; r++)
-            if('\\' == cmdInfo.m_omneon_dirs[i][r])
-                cmdInfo.m_omneon_dirs[i][r] = '/';
-
-    /* setup directory */
-    r = OmPlrClipSetDirectory(dlg.m_director.handle, cmdInfo.m_omneon_dir);
-    if(0 != r)
-    {
-        OmPlrClose(dlg.m_director.handle);
-        MessageBox(GetMainWnd()->GetSafeHwnd(),
-            "Failed connect to change directory on Omneon", "ERROR!" ,
-            MB_OK | MB_ICONEXCLAMATION);
-        return FALSE;
-    };
-    /* create lock */
-    dlg.m_director.lock = CreateMutex(NULL, FALSE, NULL);
-    dlg.m_director.f_online = 0;
-
-    INT_PTR nResponse = dlg.DoModal();
-    if(m_mcs3)
-        mcs3_close(m_mcs3);
-    OmPlrClose(dlg.m_director.handle);
-    CloseHandle(dlg.m_director.lock);
 
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.

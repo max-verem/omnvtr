@@ -103,6 +103,17 @@ BEGIN
     CONTROL         "",IDC_PROGRESS_COPY,"msctls_progress32",PBS_SMOOTH | WS_BORDER,7,91,302,14
 END
 
+IDD_REELSELECT DIALOGEX 0, 0, 208, 55
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select reel"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,95,34,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,151,34,50,14
+    COMBOBOX        IDC_COMBO_REELNAME,7,17,194,96,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Select existing reel or enter new reel name:",IDC_STATIC,7,7,194,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -127,6 +138,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 135
     END
+
+    IDD_REELSELECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 201
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -138,19 +157,27 @@ END
 
 STRINGTABLE 
 BEGIN
+    IDC_BUTTON_LOAD         "Load existing clip"
+    IDC_BUTTON_EXPORT       "Export to new clip"
     IDC_BUTTON_OPER_MARK_IN "Mark In (I)"
     IDC_BUTTON_OPER_BACKWARD "Fast backward (A)"
-    IDC_BUTTON_OPER_STEP_B "Step back (W-S)"
-    IDC_BUTTON_OPER_STOP "Stop (Space/S)"
-    IDC_BUTTON_OPER_PLAY "Play (Space/S)"
-    IDC_BUTTON_OPER_STEP_F "Step forward (W-D)"
-    IDC_BUTTON_OPER_FORWARD "Fast forward"
+    IDC_BUTTON_OPER_STEP_B  "Step back (W-S)"
     IDC_BUTTON_OPER_MARK_OUT "Mark out"
-    IDC_BUTTON_NEW "Start with NEW Clip id"
-    IDC_BUTTON_LOAD "Load existing clip"
-    IDC_BUTTON_EXPORT "Export to new clip"
-    IDC_BUTTON_EXIT "Exit from software"
-    IDC_BUTTON_OPER_RECORD "Start record"
+    IDC_BUTTON_OPER_FORWARD "Fast forward"
+    IDC_BUTTON_OPER_STEP_F  "Step forward (W-D)"
+    IDC_BUTTON_OPER_STOP    "Stop (Space/S)"
+    IDC_BUTTON_OPER_PLAY    "Play (Space/S)"
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_BUTTON_EXIT         "Exit from software"
+    IDC_BUTTON_NEW          "Start with NEW Clip id"
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_BUTTON_OPER_RECORD  "Start record"
 END
 
 #endif    // Ukrainian resources
@@ -187,10 +214,8 @@ BEGIN
     CTEXT           "VIDEO ID",IDC_STATIC_VIDEO_ID,7,25,80,8
     CTEXT           "0.0X",IDC_STATIC_SPEED,233,25,80,8
     CTEXT           "STATUS",IDC_STATIC_STATUS,119,25,80,8
-    PUSHBUTTON      "NEW",IDC_BUTTON_NEW,7,7,50,14,BS_FLAT
-    PUSHBUTTON      "LOAD",IDC_BUTTON_LOAD,59,7,50,14,BS_FLAT
     LTEXT           "Static",IDC_STATIC_INFO1,7,103,306,8
-    PUSHBUTTON      "EXPORT",IDC_BUTTON_EXPORT,112,7,50,14,BS_FLAT
+    PUSHBUTTON      "EXPORT",IDC_BUTTON_EXPORT,7,7,50,14,BS_FLAT
     PUSHBUTTON      "IN",IDC_BUTTON_OPER_MARK_IN,30,64,30,14,BS_FLAT
     PUSHBUTTON      "<<",IDC_BUTTON_OPER_BACKWARD,41,85,27,14,BS_FLAT
     PUSHBUTTON      "-<",IDC_BUTTON_OPER_STEP_B,71,85,31,14,BS_FLAT
@@ -201,6 +226,25 @@ BEGIN
     PUSHBUTTON      "[ |> ]",IDC_BUTTON_OPER_PLAY,139,85,31,14,BS_FLAT
     PUSHBUTTON      "REC",IDC_BUTTON_OPER_RECORD,283,84,30,14,BS_FLAT
 END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_OMNVTRUI_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 313
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 111
+    END
+END
+#endif    // APSTUDIO_INVOKED
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -240,25 +284,6 @@ BEGIN
         VALUE "Translation", 0x409, 1252
     END
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_OMNVTRUI_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 313
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 111
-    END
-END
-#endif    // APSTUDIO_INVOKED
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////

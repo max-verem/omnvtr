@@ -25,4 +25,6 @@ public:
     int m_omneon_dirs_cnt;
     int m_msc3_serial_port;
     int m_syncplay_delay;
+    int m_mode;
+    char m_edl[MAX_LEN_CONF_PARAM];
 };

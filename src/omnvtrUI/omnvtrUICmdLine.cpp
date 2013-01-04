@@ -11,6 +11,7 @@ ComnvtrUICmdLine::ComnvtrUICmdLine(void)
     m_msc3_serial_port = -1;
     m_omneon_dirs_cnt = 0;
     m_syncplay_delay = 0;
+    m_mode = 0;
 }
 
 ComnvtrUICmdLine::~ComnvtrUICmdLine(void)

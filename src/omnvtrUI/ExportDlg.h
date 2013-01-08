@@ -1,5 +1,6 @@
 #pragma once
 
+#include "EDLFile.h"
 
 // ExportDlg dialog
 
@@ -16,6 +17,8 @@ public:
     void* pomc;
     HANDLE homc;
     int eomc;
+    CEDLFile* edl;
+    HANDLE lock;
 
 protected:
     afx_msg void OnTimer(UINT nIDEvent);

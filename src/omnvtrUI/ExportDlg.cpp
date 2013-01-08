@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 #include "omnvtrUI.h"
-#include "omnvtrUIDlg.h"
 #include "ExportDlg.h"
+#include "timecode.h"
 
 #include <ommedia.h>
 #pragma comment(lib, "ommedia.lib")
@@ -38,6 +38,7 @@ END_MESSAGE_MAP()
 BOOL ExportDlg::OnInitDialog()
 {
     int i;
+    char buf[3][128];
     CDialog::OnInitDialog();
 
     CComboBox
@@ -61,6 +62,32 @@ BOOL ExportDlg::OnInitDialog()
 
     GetDlgItem(IDC_EDIT_ID)->SetFocus();
 
+    /* init EDL object */
+    edl = new CEDLFile
+    (
+        theApp.cmdInfo.m_omneon_host,
+        theApp.cmdInfo.m_omneon_dir,
+        theApp.cmdInfo.m_edl
+    );
+
+    if(theApp.cmdInfo.m_mark_in < 0)
+        theApp.cmdInfo.m_mark_in = 0;
+
+    if(theApp.cmdInfo.m_mark_out < 0)
+        theApp.cmdInfo.m_mark_out = edl->dur();
+
+    _snprintf
+    (
+        buf[0], sizeof(buf[0]),
+        "EDL = [%s], IN = [%s], OUT = [%s]",
+        theApp.cmdInfo.m_edl,
+        tc_frames2txt(theApp.cmdInfo.m_mark_in, buf[1]),
+        tc_frames2txt(theApp.cmdInfo.m_mark_out, buf[2])
+    );
+    GetDlgItem(IDC_STATIC_IN_OUT)->SetWindowText(buf[0]);
+
+    lock = CreateMutex(NULL, FALSE, NULL);
+
     return FALSE;
 }
 
@@ -68,16 +95,15 @@ void ExportDlg::OnTimer(UINT nIDEvent)
 {
     int r = 0;
     OmCopyProgress progress;
-    ComnvtrUIDlg* dlg = (ComnvtrUIDlg*)GetParent();
     CProgressCtrl* p_ui = (CProgressCtrl*)GetDlgItem(IDC_PROGRESS_COPY);
 
-    WaitForSingleObject(dlg->m_director.lock, INFINITE);
+    WaitForSingleObject(lock, INFINITE);
     if(pomc)
     {
         progress = ((OmMediaCopier*)pomc)->getProgress();
         r = 1;
     }
-    ReleaseMutex(dlg->m_director.lock);
+    ReleaseMutex(lock);
 
     if(r)
     {
@@ -111,14 +137,13 @@ static unsigned long WINAPI worker(LPVOID pParam)
     int r;
 
     ExportDlg* main = (ExportDlg*)pParam;
-    ComnvtrUIDlg* dlg = (ComnvtrUIDlg*)main->GetParent();
 
     r = ((OmMediaCopier*)main->pomc)->copy();
 
-    WaitForSingleObject(dlg->m_director.lock, INFINITE);
+    WaitForSingleObject(main->lock, INFINITE);
     delete (OmMediaCopier*)main->pomc;
     main->pomc = NULL;
-    ReleaseMutex(dlg->m_director.lock);
+    ReleaseMutex(main->lock);
 
     if(r)
         main->eomc = 1;
@@ -131,9 +156,7 @@ static unsigned long WINAPI worker(LPVOID pParam)
 void ExportDlg::OnCancel()
 {
     int c = 0;
-    ComnvtrUIDlg* dlg = (ComnvtrUIDlg*)GetParent();
-
-    WaitForSingleObject(dlg->m_director.lock, INFINITE);
+    WaitForSingleObject(lock, INFINITE);
     if(pomc)
         ((OmMediaCopier*)pomc)->cancel();
     else
@@ -141,7 +164,7 @@ void ExportDlg::OnCancel()
         if(homc == INVALID_HANDLE_VALUE)
             c = 1;
     };
-    ReleaseMutex(dlg->m_director.lock);
+    ReleaseMutex(lock);
 
     if(c)
         CDialog::OnCancel();
@@ -149,15 +172,13 @@ void ExportDlg::OnCancel()
 
 void ExportDlg::OnOK()
 {
-    int r, d = 0, mark_out, mark_in;
+    int i, r;
     char file_origin[256], id_selected[256], file_target[256];
     CComboBox
         *combo_dirs = (CComboBox*)GetDlgItem(IDC_COMBO_DIRS),
         *combo_types = (CComboBox*)GetDlgItem(IDC_COMBO_TYPES);
     CEdit
         *id_edit = (CEdit*)GetDlgItem(IDC_EDIT_ID);
-
-    ComnvtrUIDlg* dlg = (ComnvtrUIDlg*)GetParent();
 
     if(homc != INVALID_HANDLE_VALUE)
         return;
@@ -175,16 +196,12 @@ void ExportDlg::OnOK()
     /* request selected args */
     char* target_dir = theApp.cmdInfo.m_omneon_dirs[combo_dirs->GetItemData(combo_dirs->GetCurSel())];
     enum OmMediaCopyType t = (enum OmMediaCopyType)combo_types->GetItemData(combo_types->GetCurSel());
-#if 0
-    /* build filenames */
-    _snprintf
-    (
-        file_origin, sizeof(file_origin),
-        "%s/%s.%s",
-        theApp.cmdInfo.m_omneon_dir,
-        dlg->m_director.id,
-        "mov"
-    );
+
+    OmMediaCopier* omcp = new OmMediaCopier();
+#ifdef _DEBUG
+    omcp->setDebug("c:\\temp\\omnvtr.log1");
+#endif
+    omcp->setRemoteHost(theApp.cmdInfo.m_omneon_host);
     _snprintf
     (
         file_target, sizeof(file_target),
@@ -193,30 +210,28 @@ void ExportDlg::OnOK()
         id_selected,
         "mov"
     );
-#endif
-    OmMediaCopier* omcp = new OmMediaCopier();
-#ifdef _DEBUG
-    omcp->setDebug("c:\\temp\\omnvtr.log1");
-#endif
-    omcp->setRemoteHost(theApp.cmdInfo.m_omneon_host);
     omcp->setDestination(file_target, 1);
     omcp->setOutputSuffix(omMediaFileTypeQt, "mov");
     omcp->setCopyType(t);
 
-    if(dlg->m_director.mark_in < 0)
-        mark_in = 0;
-    else
-        mark_in = dlg->m_director.mark_in;
-    if(dlg->m_director.mark_out < 0)
-        mark_out = ~0;
-    else
-        mark_out = dlg->m_director.mark_out;
+    for(i = 0; i < edl->count(); i++)
+    {
+        _snprintf
+        (
+            file_origin, sizeof(file_origin),
+            "%s/%d.%s",
+            theApp.cmdInfo.m_omneon_dir,
+            edl->id(i),
+            "mov"
+        );
 
-    r = omcp->appendTracks(0, file_origin, mark_in, mark_out);
+        r = omcp->appendTracks(0, file_origin, edl->mark_in(i), edl->mark_out(i));
+    };
+    r = omcp->setRange(theApp.cmdInfo.m_mark_in, theApp.cmdInfo.m_mark_out);
 
-    WaitForSingleObject(dlg->m_director.lock, INFINITE);
+    WaitForSingleObject(lock, INFINITE);
     pomc = omcp;
-    ReleaseMutex(dlg->m_director.lock);
+    ReleaseMutex(lock);
 
     homc = ::CreateThread(NULL, 0, worker, this, 0, NULL);
 

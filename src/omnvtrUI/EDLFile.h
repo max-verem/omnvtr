@@ -24,4 +24,5 @@ public:
     int dur(int idx);
     int id(int idx);
     int count();
+    int dur();
 };

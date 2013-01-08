@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -205,4 +207,14 @@ int CEDLFile::lookup(int tc, int* poffset)
     };
 
     return -1;
+};
+
+int CEDLFile::dur()
+{
+    int i, d;
+
+    for(i = 0, d = 0; i < items_count; i++)
+        d += items_list[i].mark_out - items_list[i].mark_in;
+
+    return d;
 };

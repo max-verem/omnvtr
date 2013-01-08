@@ -5,8 +5,6 @@
 #include "stdafx.h"
 #include "omnvtrUI.h"
 #include "omnvtrUIDlg.h"
-#include "IDInputDlg.h"
-#include "ExportDlg.h"
 
 #include "../mcs3/mcs3.h"
 #include "timecode.h"
@@ -688,12 +686,58 @@ void ComnvtrUIDlg::window_lock(int l, char* msg)
     EnableWindow(l);
     UpdateWindow();
 };
-;
+
 void ComnvtrUIDlg::OnBnClickedButtonExport()
 {
-    ExportDlg dlg;
+    int i, j;
+    char buf[512];
+    char export_cmd_line[1024];
 
-    dlg.DoModal();
+    export_cmd_line[0] = 0;
+
+    strncat(export_cmd_line, " /export ", sizeof(export_cmd_line));
+    strncat(export_cmd_line, " /edl ", sizeof(export_cmd_line));
+    strncat(export_cmd_line, theApp.cmdInfo.m_edl, sizeof(export_cmd_line));
+
+    if(m_director.mark_in >= 0)
+    {
+        strncat(export_cmd_line, " /mark_in ", sizeof(export_cmd_line));
+        _snprintf(buf, sizeof(buf), " %d ", m_director.mark_in);
+        strncat(export_cmd_line, buf, sizeof(export_cmd_line));
+    };
+
+    if(m_director.mark_out >= 0)
+    {
+        strncat(export_cmd_line, " /mark_out ", sizeof(export_cmd_line));
+        _snprintf(buf, sizeof(buf), " %d ", m_director.mark_out);
+        strncat(export_cmd_line, buf, sizeof(export_cmd_line));
+    };
+
+    strncat(export_cmd_line, " /omneon_host ", sizeof(export_cmd_line));
+    strncat(export_cmd_line, theApp.cmdInfo.m_omneon_host, sizeof(export_cmd_line));
+
+    strncat(export_cmd_line, " /omneon_player ", sizeof(export_cmd_line));
+    strncat(export_cmd_line, theApp.cmdInfo.m_omneon_player, sizeof(export_cmd_line));
+
+    strncat(export_cmd_line, " /omneon_dir ", sizeof(export_cmd_line));
+    strncpy(buf, theApp.cmdInfo.m_omneon_dir, sizeof(buf));
+    for(i = 0; buf[i]; i++) if('/' == buf[i]) buf[i] = '\\';
+    strncat(export_cmd_line, buf, sizeof(export_cmd_line));
+
+    for(j = 0; j < theApp.cmdInfo.m_omneon_dirs_cnt; j++)
+    {
+        strncat(export_cmd_line, " /export_dir ", sizeof(export_cmd_line));
+        strncpy(buf, theApp.cmdInfo.m_omneon_dirs[j], sizeof(buf));
+        for(i = 0; buf[i]; i++) if('/' == buf[i]) buf[i] = '\\';
+        strncat(export_cmd_line, buf, sizeof(export_cmd_line));
+    };
+
+    strncat(export_cmd_line, " /msc3_serial_port ", sizeof(export_cmd_line));
+    _snprintf(buf, sizeof(buf), " %d ", theApp.cmdInfo.m_msc3_serial_port);
+    strncat(export_cmd_line, buf, sizeof(export_cmd_line));
+
+    GetModuleFileName(NULL, buf, sizeof(buf));
+    ShellExecute(NULL, NULL, buf, export_cmd_line, NULL, SW_SHOW);
 }
 
 BOOL ComnvtrUIDlg::PreTranslateMessage(MSG* pMsg)

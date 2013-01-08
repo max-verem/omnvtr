@@ -12,6 +12,7 @@ ComnvtrUICmdLine::ComnvtrUICmdLine(void)
     m_omneon_dirs_cnt = 0;
     m_syncplay_delay = 0;
     m_mode = 0;
+    m_mark_in = m_mark_out = -1;
 }
 
 ComnvtrUICmdLine::~ComnvtrUICmdLine(void)
@@ -28,7 +29,11 @@ enum ComnvtrUICmdLineOpts
     opt_export_dir,
     opt_syncplay_omneon_host,
     opt_syncplay_omneon_player,
-    opt_syncplay_delay
+    opt_syncplay_delay,
+    opt_edl,
+    opt_mark_in,
+    opt_mark_out,
+    opt_export
 };
 
 static struct
@@ -45,6 +50,10 @@ static struct
     {"syncplay_omneon_host", opt_syncplay_omneon_host},
     {"syncplay_omneon_player", opt_syncplay_omneon_player},
     {"syncplay_delay",      opt_syncplay_delay},
+    {"export",              opt_export},
+    {"edl",                 opt_edl},
+    {"mark_in",             opt_mark_in},
+    {"mark_out",            opt_mark_out},
     {NULL,                  opt_none}
 };
 
@@ -71,6 +80,11 @@ void ComnvtrUICmdLine::ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast)
         /* check options */
         switch(opt)
         {
+            case opt_export:
+                m_mode = 1;
+                opt = opt_none;
+                break;
+
             /* if unknown option found */
             case opt_none:
                 MessageBox(theApp.GetMainWnd()->GetSafeHwnd(), pszParam, "OPTIONS: WRONG OPTION" , MB_OK | MB_ICONEXCLAMATION);
@@ -86,6 +100,9 @@ void ComnvtrUICmdLine::ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast)
             case opt_syncplay_omneon_host:
             case opt_syncplay_omneon_player:
             case opt_syncplay_delay:
+            case opt_edl:
+            case opt_mark_in:
+            case opt_mark_out:
                 if(bLast)
                 {
                     MessageBox
@@ -105,6 +122,15 @@ void ComnvtrUICmdLine::ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLast)
         /* check what option was previously */
         switch(opt)
         {
+            case opt_mark_in:
+                m_mark_in = atol((char*)pszParam);
+                opt = opt_none;
+                break;
+            case opt_mark_out:
+                m_mark_out = atol((char*)pszParam);
+                opt = opt_none;
+                break;
+            case opt_edl:                   buf = m_edl; break;
             case opt_msc3_serial_port:
                 m_msc3_serial_port = atol((char*)pszParam);
                 opt = opt_none;

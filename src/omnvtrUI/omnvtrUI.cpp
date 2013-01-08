@@ -6,6 +6,7 @@
 #include "omnvtrUI.h"
 #include "omnvtrUIDlg.h"
 #include "ReelSelectDlg.h"
+#include "ExportDlg.h"
 #include "../mcs3/mcs3.h"
 #include <Mmsystem.h>
 
@@ -76,15 +77,29 @@ BOOL ComnvtrUIApp::InitInstance()
     if(0 != cmdInfo.check_params())
         return FALSE;
 
+    /* replace slashes for path due to micrecognize of slash */
+    for(r = 0; 0 != cmdInfo.m_omneon_dir[r]; r++)
+        if('\\' == cmdInfo.m_omneon_dir[r])
+            cmdInfo.m_omneon_dir[r] = '/';
+    for(i = 0; i < cmdInfo.m_omneon_dirs_cnt; i++)
+        for(r = 0; 0 != cmdInfo.m_omneon_dirs[i][r]; r++)
+            if('\\' == cmdInfo.m_omneon_dirs[i][r])
+                cmdInfo.m_omneon_dirs[i][r] = '/';
+
     /* check mode */
-    if(!cmdInfo.m_mode)
+    if(cmdInfo.m_mode)
+    {
+        ExportDlg d1;
+        r = d1.DoModal();
+    }
+    else
     {
         OmPlrHandle handle;
 
-        /* edl (reel) select dialog */
+        /* edl (reel) select dialog, if not supplies */
+        if(!cmdInfo.m_edl[0])
         {
             CReelSelectDlg d1;
-//            m_pMainWnd = &d1;
             r = d1.DoModal();
         };
 
@@ -114,14 +129,6 @@ BOOL ComnvtrUIApp::InitInstance()
                 MB_OK | MB_ICONEXCLAMATION);
             return FALSE;
         };
-        /* replace slashes for path due to micrecognize of slash */
-        for(r = 0; 0 != cmdInfo.m_omneon_dir[r]; r++)
-            if('\\' == cmdInfo.m_omneon_dir[r])
-                cmdInfo.m_omneon_dir[r] = '/';
-        for(i = 0; i < cmdInfo.m_omneon_dirs_cnt; i++)
-            for(r = 0; 0 != cmdInfo.m_omneon_dirs[i][r]; r++)
-                if('\\' == cmdInfo.m_omneon_dirs[i][r])
-                    cmdInfo.m_omneon_dirs[i][r] = '/';
 
         /* setup directory */
         r = OmPlrClipSetDirectory(handle, cmdInfo.m_omneon_dir);

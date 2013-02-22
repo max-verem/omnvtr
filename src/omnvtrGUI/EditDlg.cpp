@@ -307,6 +307,14 @@ BOOL CEditDlg::PreTranslateMessage(MSG* pMsg)
     {
         switch(pMsg->wParam)
         {
+            case 'e':
+            case 'E':
+                if(GetKeyState(VK_CONTROL)< 0)
+                {
+                    OnBnClickedButtonExport();
+                    return TRUE;
+                };
+                break;
             case 'W':
                 key_W_pressed = 1;
                 return TRUE;

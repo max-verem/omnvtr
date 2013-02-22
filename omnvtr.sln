@@ -12,6 +12,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "omnvtrUI", "omnvtrUI.vcproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "omnvtr_edt", "omnvtr_edt.vcproj", "{13FF28AD-59C2-45B0-AF59-44D065C44088}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "omnvtrGUI", "omnvtrGUI.vcproj", "{45361D0E-78BF-4FE9-8ADB-28F3A2AD37CE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D2962261-800A-4FD8-8707-29E81B60F705} = {D2962261-800A-4FD8-8707-29E81B60F705}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -34,6 +39,10 @@ Global
 		{13FF28AD-59C2-45B0-AF59-44D065C44088}.Debug|Win32.Build.0 = Debug|Win32
 		{13FF28AD-59C2-45B0-AF59-44D065C44088}.Release|Win32.ActiveCfg = Release|Win32
 		{13FF28AD-59C2-45B0-AF59-44D065C44088}.Release|Win32.Build.0 = Release|Win32
+		{45361D0E-78BF-4FE9-8ADB-28F3A2AD37CE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{45361D0E-78BF-4FE9-8ADB-28F3A2AD37CE}.Debug|Win32.Build.0 = Debug|Win32
+		{45361D0E-78BF-4FE9-8ADB-28F3A2AD37CE}.Release|Win32.ActiveCfg = Release|Win32
+		{45361D0E-78BF-4FE9-8ADB-28F3A2AD37CE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

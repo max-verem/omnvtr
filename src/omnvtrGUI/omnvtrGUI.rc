@@ -1,0 +1,323 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Ukrainian resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_UKR)
+#ifdef _WIN32
+LANGUAGE LANG_UKRAINIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\omnvtrGUI.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\omnvtrGUI.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_REEL_NAME DIALOGEX 0, 0, 316, 47
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Record name"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,205,26,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,259,26,50,14
+    EDITTEXT        IDC_EDIT1,7,7,302,14,ES_AUTOHSCROLL
+END
+
+IDD_EXPORT_DIALOG DIALOGEX 0, 0, 326, 168
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 10, "Arial", 400, 0, 0xCC
+BEGIN
+    LTEXT           "You are exporting:",IDC_STATIC,7,8,69,8
+    EDITTEXT        IDC_EDIT_ID,80,7,239,14,ES_UPPERCASE | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MARK_IN,30,28,57,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MARK_OUT,254,28,65,14,ES_CENTER | ES_AUTOHSCROLL
+    LTEXT           "from",IDC_STATIC,7,29,19,8
+    LTEXT           "to",IDC_STATIC,239,29,11,8
+    CONTROL         "",IDC_SLIDER_RANGE,"msctls_trackbar32",TBS_NOTICKS | TBS_ENABLESELRANGE | TBS_NOTHUMB,93,27,143,15
+    CONTROL         "",IDC_PROGRESS_COPY,"msctls_progress32",PBS_SMOOTH | WS_BORDER,7,113,312,14
+    LTEXT           "into directory",IDC_STATIC,7,50,312,8
+    COMBOBOX        IDC_COMBO_DIRS,7,62,312,121,CBS_DROPDOWNLIST | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_TYPES,7,89,312,121,CBS_DROPDOWNLIST | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "file type is",IDC_STATIC,7,78,312,8
+    PUSHBUTTON      "START\nexporting",IDC_BUTTON_START,194,139,58,22,BS_MULTILINE | BS_FLAT
+    PUSHBUTTON      "ABORT\nexporting",IDC_BUTTON_ABORT,261,139,58,22,BS_MULTILINE | BS_FLAT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_REEL_NAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+
+    IDD_EXPORT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 319
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 161
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDC_BUTTON_LIST_RENAME  "Rename selected record"
+    IDC_BUTTON_LIST_JUNK    "View trash with deleted records"
+    IDC_BUTTON_LIST_OPEN    "Open saved record"
+    IDC_BUTTON_LIST_DELETE  "Delete record"
+    IDC_BUTTON_LIST_RESTORE "Restore record"
+    IDC_LIST_SHOW           "Show records"
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_BUTTON_MARK_OUT     "Set OUT mark. If IN and OUT marks set, video will be recorded between this points [O]"
+    IDC_BUTTON_CTL_RECORD   "Record. Press record two times to start recording [R]"
+    IDC_BUTTON_CTL_PLAY     "Play. [S] or [Space]"
+    IDC_BUTTON_CTL_STEP_FF  "Step forward. [W+D]"
+    IDC_BUTTON_CTL_FAST_FF  "Fast forward. Press several times to increase speed [D]"
+    IDC_BUTTON_CTL_FAST_REV "Fast rewind. Press several times to increase speed [A]"
+    IDC_BUTTON_CTL_STEP_REV "Step backward. [W+A]"
+    IDC_BUTTON_CTL_PAUSE    "Stop. [S] or [Space]"
+    IDC_BUTTON_LIST_LIST    "View records list"
+    IDC_BUTTON_LIST_CREATE  "Create new record [Ctrl+N]"
+    IDC_LIST_HIDE           "Hide records"
+END
+
+STRINGTABLE 
+BEGIN
+    IDC_BUTTON_UNDO         "Undo last cut [Ctrl-Z]"
+    IDC_BUTTON_EXPORT       "Export to file"
+    IDC_BUTTON_GOTO_IN      "Go to IN mark"
+    IDC_BUTTON_GOTO_OUT     "Go to OUT mark"
+    IDC_BUTTON_MARK_IN      "Set IN mark. If it set, recording begins from this point [I]"
+END
+
+#endif    // Ukrainian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OMNVTRGUI_DIALOG DIALOGEX 0, 0, 623, 201
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "omnvtrGUI"
+FONT 10, "Arial", 400, 0, 0xCC
+BEGIN
+    GROUPBOX        "",IDC_STATIC,2,0,340,37
+    GROUPBOX        "",IDC_STATIC,2,38,340,148
+    PUSHBUTTON      "UNDO last\n recording",IDC_BUTTON_UNDO,9,8,71,22,BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "EXPORT\nrecord",IDC_BUTTON_EXPORT,89,8,71,22,BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
+    EDITTEXT        IDC_EDIT_MARK_IN,9,68,78,14,ES_CENTER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EDIT_MARK_OUT,253,70,80,14,ES_CENTER | NOT WS_TABSTOP
+    PUSHBUTTON      "<",IDC_BUTTON_GOTO_IN,9,85,17,14,BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      ">",IDC_BUTTON_GOTO_OUT,316,87,17,14,BS_FLAT | NOT WS_TABSTOP
+    CTEXT           "Create new or open existing",IDC_LABEL_TITLE,9,51,326,13
+    PUSHBUTTON      "MARK IN",IDC_BUTTON_MARK_IN,44,85,43,14,BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "MARK OUT",IDC_BUTTON_MARK_OUT,253,87,43,14,BS_FLAT | NOT WS_TABSTOP
+    CTEXT           "00:00:00:00",IDC_LABEL_TC,89,69,162,29
+    CTEXT           "0.0 X",IDC_LABEL_SPEED,89,108,162,13
+    PUSHBUTTON      "[  | > ]",IDC_BUTTON_CTL_PLAY,144,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "> +",IDC_BUTTON_CTL_STEP_FF,187,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      ">>",IDC_BUTTON_CTL_FAST_FF,230,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "<<",IDC_BUTTON_CTL_FAST_REV,15,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "- <",IDC_BUTTON_CTL_STEP_REV,58,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "[ | | ]",IDC_BUTTON_CTL_PAUSE,101,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "REC",IDC_BUTTON_CTL_RECORD,288,151,31,25,BS_FLAT | NOT WS_TABSTOP
+    GROUPBOX        "",IDC_LIST_AREA,344,0,254,186
+    PUSHBUTTON      "LIST",IDC_BUTTON_LIST_LIST,539,7,26,18,BS_VCENTER | NOT WS_TABSTOP | BS_CHECKBOX | BS_PUSHLIKE
+    PUSHBUTTON      "JUNK",IDC_BUTTON_LIST_JUNK,568,7,26,18,BS_VCENTER | NOT WS_TABSTOP | BS_CHECKBOX | BS_PUSHLIKE
+    PUSHBUTTON      "CREATE new\nrecord",IDC_BUTTON_LIST_CREATE,346,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "OPEN\nrecord",IDC_BUTTON_LIST_OPEN,431,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "DELETE\nrecord",IDC_BUTTON_LIST_DELETE,516,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
+    CONTROL         "",IDC_LIST_RECORDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER,347,27,248,134
+    PUSHBUTTON      "RESTORE\nrecord",IDC_BUTTON_LIST_RESTORE,422,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      "<",IDC_LIST_HIDE,600,59,16,57,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    PUSHBUTTON      ">",IDC_LIST_SHOW,351,66,16,57,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_OMNVTRGUI_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 616
+        VERTGUIDE, 9
+        VERTGUIDE, 87
+        VERTGUIDE, 89
+        VERTGUIDE, 251
+        VERTGUIDE, 253
+        VERTGUIDE, 333
+        VERTGUIDE, 342
+        VERTGUIDE, 344
+        BOTTOMMARGIN, 186
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "TODO: <Company name>"
+            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "omnvtrGUI.exe"
+            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "OriginalFilename", "omnvtrGUI.exe"
+            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\omnvtrGUI.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

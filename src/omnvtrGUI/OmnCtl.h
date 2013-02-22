@@ -14,6 +14,7 @@ public:
     static const int Rate = 5;
     static const int Reel = 6;
     static const int Rem = 7;
+    static const int ReelsUpdated = 8;
     virtual void COmnCallbackNotify(int id, void* data) = 0;
 };
 

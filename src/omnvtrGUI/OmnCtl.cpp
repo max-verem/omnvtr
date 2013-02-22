@@ -180,7 +180,11 @@ int COmnCtl::status()
         clip_info.size = sizeof(clip_info);
         r = OmPlrClipGetInfo(handle, (LPCSTR)buf, &clip_info);
         if(!r)
+        {
             reel->add(record_id, clip_info.defaultIn, clip_info.defaultOut, mark_in, mark_out, 1);
+            if(cb)
+                cb->COmnCallbackNotify(COmnCallback::ReelsUpdated, NULL);
+        };
 
         /* load clip and seek to pos */
         if(mark_in < 0)

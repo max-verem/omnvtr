@@ -630,6 +630,10 @@ void CEditDlg::COmnCallbackNotify(int id, void* data)
             m_StatusBar->SetText((char*)data, 2, 0);
             SET_TEXT(CStatic, IDC_LABEL_TITLE, (char*)data);
             break;
+
+        case COmnCallback::ReelsUpdated:
+            update_list(list_area_state & LIST_AREA_STATE_JUNK);
+            break;
     };
 };
 

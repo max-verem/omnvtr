@@ -170,8 +170,8 @@ void CEditDlg::update_list(int f_deleted)
 
 static const int buttons_desc[] =
 {
-    IDC_LIST_SHOW,              1,  IDB_PANEL_SHOW,     IDB_PANEL_SHOW, //_PUSHED,
-    IDC_LIST_HIDE,              1,  IDB_PANEL_HIDE,     IDB_PANEL_HIDE, //_PUSHED,
+    IDC_LIST_SHOW,              1,  IDB_PANEL_SHOW,     IDB_PANEL_SHOW_PUSHED,
+    IDC_LIST_HIDE,              1,  IDB_PANEL_HIDE,     IDB_PANEL_HIDE_PUSHED,
     IDC_BUTTON_LIST_LIST,       1,  IDB_VIEW_LIST,      IDB_VIEW_LIST_PUSHED,
     IDC_BUTTON_LIST_JUNK,       1,  IDB_VIEW_TRASH,     IDB_VIEW_TRASH_PUSHED,
     IDC_BUTTON_LIST_CREATE,     1,  IDB_CREATE,         IDB_CREATE_PUSHED,

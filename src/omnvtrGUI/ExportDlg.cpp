@@ -77,6 +77,13 @@ void CExportDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 }
 
+static const int buttons_desc[] =
+{
+    IDC_BUTTON_START,           1,  IDB_EXPORT_START,   IDB_EXPORT_START_PUSHED,
+    IDC_BUTTON_ABORT,           1,  IDB_EXPORT_ABORT,   IDB_EXPORT_ABORT_PUSHED,
+    0, 0, 0, 0
+};
+
 
 BEGIN_MESSAGE_MAP(CExportDlg, CDialog)
     ON_WM_TIMER()
@@ -86,6 +93,8 @@ BEGIN_MESSAGE_MAP(CExportDlg, CDialog)
     ON_EN_SETFOCUS(IDC_EDIT_MARK_IN, &CExportDlg::OnEnSetfocusEditMarkIn)
     ON_BN_CLICKED(IDC_BUTTON_START, &CExportDlg::OnBnClickedButtonStart)
     ON_BN_CLICKED(IDC_BUTTON_ABORT, &CExportDlg::OnBnClickedButtonAbort)
+    ON_WM_DRAWITEM()
+    ON_WM_MEASUREITEM()
 END_MESSAGE_MAP()
 
 BOOL CExportDlg::OnInitDialog()
@@ -160,6 +169,29 @@ BOOL CExportDlg::OnInitDialog()
         )
             buf[j++] = toupper(m_reel->title[i]);
     ((CEdit*)GetDlgItem(IDC_EDIT_ID))->SetWindowText(buf);
+
+    /* create a tooltips */
+    m_ToolTip = new CToolTipCtrl();
+    if(m_ToolTip->Create(this))
+    {
+        for(i = 0; buttons_desc[i]; i += 4)
+            if(buttons_desc[i + 1])
+                m_ToolTip->AddTool(GetDlgItem(buttons_desc[i]),
+                    buttons_desc[i]);
+        m_ToolTip->Activate(TRUE);
+        m_ToolTip->SetMaxTipWidth(300);
+    }
+
+    /* try to set images for buttons */
+    for(i = 0; buttons_desc[i]; i += 4)
+    {
+        CPngImage image;
+
+        if(buttons_desc[i + 2] && image.Load(buttons_desc[i + 2], GetModuleHandle(NULL)))
+            bmps[i / 4][0] = (HBITMAP)image.Detach();
+        if(buttons_desc[i + 3] && image.Load(buttons_desc[i + 3], GetModuleHandle(NULL)))
+            bmps[i / 4][1] = (HBITMAP)image.Detach();
+    };
 
     return TRUE;
 };
@@ -466,3 +498,74 @@ void CExportDlg::OnBnClickedButtonAbort()
     if(e)
         CDialog::OnOK();
 }
+
+extern BOOL FillSolidRect(HDC hDC, int x, int y, int cx, int cy, COLORREF clr);
+extern BOOL FillSolidRect(HDC hDC, const RECT* pRC, COLORREF crColor);
+
+void CExportDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
+{
+    int idx, i;
+
+    for(i = 0, idx = -1; buttons_desc[i * 4] && idx < 0; i++)
+        if(buttons_desc[i * 4] == nIDCtl && bmps[i][0])
+            idx = i;
+
+    if(idx >= 0)
+    {
+        BITMAP bm;
+        HBITMAP bmp, hBmpOld;
+        BLENDFUNCTION bfn;
+        HDC hCDC = ::CreateCompatibleDC(lpdis->hDC);
+
+        FillSolidRect(lpdis->hDC, &lpdis->rcItem, ::GetSysColor(COLOR_BTNFACE));
+
+        i = ((CButton*)GetDlgItem(nIDCtl))->GetState();
+
+        if(i & BST_PUSHED)
+            bmp = bmps[idx][1];
+        else
+            bmp = bmps[idx][0];
+
+        hBmpOld = (HBITMAP)::SelectObject(hCDC, bmp);
+
+        ::GetObject(bmp, sizeof(bm), &bm);
+
+        bfn.BlendOp = AC_SRC_OVER;
+        bfn.BlendFlags = 0;
+        bfn.SourceConstantAlpha = 255;
+        bfn.AlphaFormat = AC_SRC_ALPHA;
+
+        i = ::AlphaBlend
+        (
+            lpdis->hDC,
+            0, 0, bm.bmWidth, bm.bmHeight,
+            hCDC,
+            0, 0, bm.bmWidth, bm.bmHeight,
+            bfn
+        );
+        if(!i)
+        {
+            i = GetLastError();
+        };
+        ::SelectObject(hCDC, hBmpOld);
+        ::DeleteDC(hCDC);
+    };
+};
+
+void CExportDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpdis)
+{
+    int i, idx;
+
+    for(i = 0, idx = -1; buttons_desc[i * 4] && idx < 0; i++)
+        if(buttons_desc[i * 4] == nIDCtl && bmps[i][0])
+            idx = i;
+
+    if(idx >= 0)
+    {
+        BITMAP bm;
+        HBITMAP bmp = bmps[idx][0];
+        ::GetObject(bmp, sizeof(bm), &bm);
+        lpdis->itemWidth = bm.bmWidth;
+        lpdis->itemHeight = bm.bmHeight;
+    };
+};

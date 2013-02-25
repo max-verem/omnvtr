@@ -16,6 +16,8 @@ public:
 	enum { IDD = IDD_EXPORT_DIALOG };
 
 protected:
+    HBITMAP bmps[32][2];
+    CToolTipCtrl* m_ToolTip;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
     virtual BOOL OnInitDialog();
     virtual void OnOK();
@@ -29,6 +31,8 @@ public:
     afx_msg void OnEnKillfocusEditMarkIn();
     afx_msg void OnEnSetfocusEditMarkIn();
     afx_msg void OnTimer(UINT nIDEvent);
+    afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
+    afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpdis);
 
 	DECLARE_MESSAGE_MAP()
     afx_msg void OnBnClickedButtonStart();

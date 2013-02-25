@@ -3,6 +3,9 @@
 //
 
 #include "stdafx.h"
+#include <afxtoolbarimages.h>
+#include <Specstrings.h>
+#include <gdiplus.h>
 #include "omnvtrGUI.h"
 #include "EditDlg.h"
 #include "timecode.h"
@@ -11,6 +14,9 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+#pragma comment(lib, "gdiplus.lib")
+using namespace Gdiplus;
 
 // CEditDlg dialog
 
@@ -54,10 +60,18 @@ BEGIN_MESSAGE_MAP(CEditDlg, CDialog)
     ON_EN_SETFOCUS(IDC_EDIT_MARK_OUT, &CEditDlg::OnEnSetfocusEditMarkOut)
     ON_EN_KILLFOCUS(IDC_EDIT_MARK_IN, &CEditDlg::OnEnKillfocusEditMarkIn)
     ON_EN_SETFOCUS(IDC_EDIT_MARK_IN, &CEditDlg::OnEnSetfocusEditMarkIn)
+#if 1
+    ON_CONTROL(BN_CLICKED, IDC_LIST_SHOW, &CEditDlg::list_area_notify_IDC_LIST_SHOW)
+    ON_CONTROL(BN_CLICKED, IDC_LIST_HIDE, &CEditDlg::list_area_notify_IDC_LIST_HIDE)
+    ON_CONTROL(BN_CLICKED, IDC_BUTTON_LIST_LIST, &CEditDlg::list_area_notify_IDC_BUTTON_LIST_LIST)
+    ON_CONTROL(BN_CLICKED, IDC_BUTTON_LIST_JUNK, &CEditDlg::list_area_notify_IDC_BUTTON_LIST_JUNK)
+#endif
+#if 0
     ON_COMMAND_EX(IDC_LIST_SHOW, &CEditDlg::list_area_notify)
     ON_COMMAND_EX(IDC_LIST_HIDE, &CEditDlg::list_area_notify)
     ON_COMMAND_EX(IDC_BUTTON_LIST_LIST, &CEditDlg::list_area_notify)
     ON_COMMAND_EX(IDC_BUTTON_LIST_JUNK, &CEditDlg::list_area_notify)
+#endif
     ON_COMMAND_EX(IDC_BUTTON_GOTO_IN, &CEditDlg::ctl_button)
     ON_COMMAND_EX(IDC_BUTTON_GOTO_OUT, &CEditDlg::ctl_button)
     ON_COMMAND_EX(IDC_BUTTON_MARK_IN, &CEditDlg::ctl_button)
@@ -72,10 +86,13 @@ BEGIN_MESSAGE_MAP(CEditDlg, CDialog)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST_RECORDS, &CEditDlg::OnNMDblclkListRecords)
     ON_BN_CLICKED(IDC_BUTTON_LIST_CREATE, &CEditDlg::OnBnClickedButtonListCreate)
     ON_BN_CLICKED(IDC_BUTTON_LIST_DELETE, &CEditDlg::OnBnClickedButtonListDelete)
+    ON_BN_CLICKED(IDC_BUTTON_LIST_DELETE_PERM, &CEditDlg::OnBnClickedButtonListDelete)
     ON_BN_CLICKED(IDC_BUTTON_LIST_RESTORE, &CEditDlg::OnBnClickedButtonListRestore)
     ON_BN_CLICKED(IDC_BUTTON_LIST_OPEN, &CEditDlg::OnBnClickedButtonListOpen)
     ON_BN_CLICKED(IDC_BUTTON_EXPORT, &CEditDlg::OnBnClickedButtonExport)
     ON_NOTIFY(NM_RDBLCLK, IDC_LIST_RECORDS, &CEditDlg::OnNMRDblclkListRecords)
+    ON_WM_DRAWITEM()
+    ON_WM_MEASUREITEM()
 END_MESSAGE_MAP()
 
 
@@ -147,6 +164,33 @@ void CEditDlg::update_list(int f_deleted)
     };
 };
 
+static const int buttons_desc[] =
+{
+    IDC_LIST_SHOW,              1,  IDB_PANEL_SHOW,     IDB_PANEL_SHOW, //_PUSHED,
+    IDC_LIST_HIDE,              1,  IDB_PANEL_HIDE,     IDB_PANEL_HIDE, //_PUSHED,
+    IDC_BUTTON_LIST_LIST,       1,  IDB_VIEW_LIST,      IDB_VIEW_LIST_PUSHED,
+    IDC_BUTTON_LIST_JUNK,       1,  IDB_VIEW_TRASH,     IDB_VIEW_TRASH_PUSHED,
+    IDC_BUTTON_LIST_CREATE,     1,  IDB_CREATE,         IDB_CREATE_PUSHED,
+    IDC_BUTTON_LIST_OPEN,       1,  IDB_OPEN,           IDB_OPEN_PUSHED,
+    IDC_BUTTON_LIST_DELETE,     1,  IDB_DELETE,         IDB_DELETE_PUSHED,
+    IDC_BUTTON_LIST_DELETE_PERM,1,  IDB_DELETE_PERM,    IDB_DELETE_PERM_PUSHED,
+    IDC_BUTTON_LIST_RESTORE,    1,  IDB_RESTORE,        IDB_RESTORE_PUSHED,
+    IDC_BUTTON_UNDO,            1,  IDB_UNDO,           IDB_UNDO_PUSHED,
+    IDC_BUTTON_EXPORT,          1,  IDB_EXPORT,         IDB_EXPORT_PUSHED,
+    IDC_BUTTON_GOTO_IN,         1,  0,                  0,
+    IDC_BUTTON_GOTO_OUT,        1,  0,                  0,
+    IDC_BUTTON_MARK_IN,         1,  0,                  0,
+    IDC_BUTTON_MARK_OUT,        1,  0,                  0,
+    IDC_BUTTON_CTL_FAST_REV,    1,  0,                  0,
+    IDC_BUTTON_CTL_STEP_REV,    1,  0,                  0,
+    IDC_BUTTON_CTL_PAUSE,       1,  0,                  0,
+    IDC_BUTTON_CTL_PLAY,        1,  0,                  0,
+    IDC_BUTTON_CTL_STEP_FF,     1,  0,                  0,
+    IDC_BUTTON_CTL_FAST_FF,     1,  0,                  0,
+    IDC_BUTTON_CTL_RECORD,      1,  IDB_REC_GREY,       IDB_REC_GREY,
+    0, 0, 0, 0
+};
+
 BOOL CEditDlg::OnInitDialog()
 {
     int i;
@@ -167,35 +211,10 @@ BOOL CEditDlg::OnInitDialog()
     m_ToolTip = new CToolTipCtrl();
     if(m_ToolTip->Create(this))
     {
-        unsigned int ids[] =
-        {
-            IDC_LIST_SHOW,
-            IDC_LIST_HIDE,
-            IDC_BUTTON_LIST_LIST,
-            IDC_BUTTON_LIST_JUNK,
-            IDC_BUTTON_LIST_LIST,
-            IDC_BUTTON_LIST_JUNK,
-            IDC_BUTTON_LIST_CREATE,
-            IDC_BUTTON_LIST_OPEN,
-            IDC_BUTTON_LIST_DELETE,
-            IDC_BUTTON_LIST_RESTORE,
-            IDC_BUTTON_UNDO,
-            IDC_BUTTON_EXPORT,
-            IDC_BUTTON_GOTO_IN,
-            IDC_BUTTON_GOTO_OUT,
-            IDC_BUTTON_MARK_IN,
-            IDC_BUTTON_MARK_OUT,
-            IDC_BUTTON_CTL_FAST_REV,
-            IDC_BUTTON_CTL_STEP_REV,
-            IDC_BUTTON_CTL_PAUSE,
-            IDC_BUTTON_CTL_PLAY,
-            IDC_BUTTON_CTL_STEP_FF,
-            IDC_BUTTON_CTL_FAST_FF,
-            IDC_BUTTON_CTL_RECORD,
-            0
-        };
-        for(int i = 0; ids[i]; i++)
-            m_ToolTip->AddTool(GetDlgItem(ids[i]), ids[i]);
+        for(i = 0; buttons_desc[i]; i += 4)
+            if(buttons_desc[i + 1])
+                m_ToolTip->AddTool(GetDlgItem(buttons_desc[i]),
+                    buttons_desc[i]);
         m_ToolTip->Activate(TRUE);
         m_ToolTip->SetMaxTipWidth(300);
     }
@@ -249,7 +268,23 @@ BOOL CEditDlg::OnInitDialog()
         InsertColumn(2, "DATE", LVCFMT_CENTER, 150, -1);
     update_list(0);
 
-	return TRUE;  // return TRUE  unless you set the focus to a control
+    /* try to set images for buttons */
+    for(i = 0; buttons_desc[i]; i += 4)
+    {
+        CPngImage image;
+
+        if(buttons_desc[i + 2] && image.Load(buttons_desc[i + 2], GetModuleHandle(NULL)))
+            bmps[i / 4][0] = (HBITMAP)image.Detach();
+        if(buttons_desc[i + 3] && image.Load(buttons_desc[i + 3], GetModuleHandle(NULL)))
+            bmps[i / 4][1] = (HBITMAP)image.Detach();
+    };
+
+    GetDlgItem(IDC_BUTTON_LIST_JUNK)->
+        ModifyStyle(SS_TYPEMASK, BS_OWNERDRAW, SWP_FRAMECHANGED);
+    GetDlgItem(IDC_BUTTON_LIST_LIST)->
+        ModifyStyle(SS_TYPEMASK, BS_OWNERDRAW, SWP_FRAMECHANGED);
+
+    return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 // If you add a minimize button to your dialog, you will need the code below
@@ -445,7 +480,8 @@ void CEditDlg::list_area_state_adopt()
     GetDlgItem(IDC_BUTTON_LIST_JUNK)->ShowWindow(s_g);
     GetDlgItem(IDC_BUTTON_LIST_CREATE)->ShowWindow(s_n);
     GetDlgItem(IDC_BUTTON_LIST_OPEN)->ShowWindow(s_n);
-    GetDlgItem(IDC_BUTTON_LIST_DELETE)->ShowWindow(s_g);
+    GetDlgItem(IDC_BUTTON_LIST_DELETE)->ShowWindow(s_n);
+    GetDlgItem(IDC_BUTTON_LIST_DELETE_PERM)->ShowWindow(s_j);
     GetDlgItem(IDC_BUTTON_LIST_RESTORE)->ShowWindow(s_j);
     GetDlgItem(IDC_LIST_HIDE)->ShowWindow(s_g);
     GetDlgItem(IDC_LIST_AREA)->ShowWindow(s_g);
@@ -455,12 +491,12 @@ void CEditDlg::list_area_state_adopt()
     int s, r;
     r = !(list_area_state & LIST_AREA_STATE_JUNK);
     s = ((CButton*)GetDlgItem(IDC_BUTTON_LIST_LIST))->GetState();
-    if(r != s)
+    if(r != (s & BST_PUSHED))
         ((CButton*)GetDlgItem(IDC_BUTTON_LIST_LIST))->SetState(r);
 
     r = list_area_state & LIST_AREA_STATE_JUNK;
     s = ((CButton*)GetDlgItem(IDC_BUTTON_LIST_JUNK))->GetState();
-    if(r != s)
+    if(r != (s & BST_PUSHED))
         ((CButton*)GetDlgItem(IDC_BUTTON_LIST_JUNK))->SetState(r);
 
     if(list_area_state & LIST_AREA_STATE_VISIBLE)
@@ -486,14 +522,20 @@ BOOL CEditDlg::list_area_notify(unsigned int id)
 
         case IDC_BUTTON_LIST_LIST:
             TRACE("IDC_BUTTON_LIST_LIST\n");
-            list_area_state &= ~LIST_AREA_STATE_JUNK;
-            update_list(0);
+            if(list_area_state & LIST_AREA_STATE_JUNK)
+            {
+                list_area_state &= ~LIST_AREA_STATE_JUNK;
+                update_list(0);
+            };
             break;
 
         case IDC_BUTTON_LIST_JUNK:
             TRACE("IDC_BUTTON_LIST_JUNK\n");
-            list_area_state |= LIST_AREA_STATE_JUNK;
-            update_list(1);
+            if(!(list_area_state & LIST_AREA_STATE_JUNK))
+            {
+                list_area_state |= LIST_AREA_STATE_JUNK;
+                update_list(1);
+            };
             break;
     };
 
@@ -854,3 +896,104 @@ void CEditDlg::OnNMRDblclkListRecords(NMHDR *pNMHDR, LRESULT *pResult)
     };
 
 }
+
+/*
+    http://public.googlecode.com/svn-history/r65/trunk/HDC.cpp
+*/
+BOOL FillSolidRect(HDC hDC, int x, int y, int cx, int cy, COLORREF clr)
+{
+    if (!hDC)
+    {
+        return FALSE;
+    }
+    RECT rect = {x, y, x + cx, y + cy};	
+    COLORREF crOldBkColor = ::SetBkColor(hDC, clr);	
+    ::ExtTextOut(hDC, 0, 0, ETO_OPAQUE, &rect, NULL, 0, NULL);
+    ::SetBkColor(hDC, crOldBkColor);	
+    return TRUE;
+}
+BOOL FillSolidRect(HDC hDC, const RECT* pRC, COLORREF crColor)
+{
+    HBRUSH hBrush = NULL, hOldBrush = NULL;
+    if (!hDC || !pRC)
+    {
+        return FALSE;
+    }
+    return FillSolidRect(hDC, pRC->left, pRC->top, pRC->right - pRC->left, pRC->bottom - pRC->top, crColor);
+}
+
+/*
+    http://support.microsoft.com/kb/179909/ru
+    http://stackoverflow.com/questions/9293298/mfc-image-button-with-transparency
+    http://www.cpp-home.com/tutorials/176_4.htm
+    http://social.msdn.microsoft.com/Forums/en-US/vssmartdevicesnative/thread/c78a4c4c-bc31-4695-a229-59cfe6b56732/
+    http://stackoverflow.com/questions/3005685/load-a-png-resource-into-a-cbitmap
+*/
+void CEditDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
+{
+    int idx, i;
+
+    for(i = 0, idx = -1; buttons_desc[i * 4] && idx < 0; i++)
+        if(buttons_desc[i * 4] == nIDCtl && bmps[i][0])
+            idx = i;
+
+    if(idx >= 0)
+    {
+        BITMAP bm;
+        HBITMAP bmp, hBmpOld;
+        BLENDFUNCTION bfn;
+        HDC hCDC = ::CreateCompatibleDC(lpdis->hDC);
+
+        FillSolidRect(lpdis->hDC, &lpdis->rcItem, ::GetSysColor(COLOR_BTNFACE));
+
+        i = ((CButton*)GetDlgItem(nIDCtl))->GetState();
+//        TRACE("OnDrawItem: item %d, has state %.2X\n", nIDCtl, i);
+
+        if(i & BST_PUSHED)
+            bmp = bmps[idx][1];
+        else
+            bmp = bmps[idx][0];
+
+        hBmpOld = (HBITMAP)::SelectObject(hCDC, bmp);
+
+        ::GetObject(bmp, sizeof(bm), &bm);
+
+        bfn.BlendOp = AC_SRC_OVER;
+        bfn.BlendFlags = 0;
+        bfn.SourceConstantAlpha = 255;
+        bfn.AlphaFormat = AC_SRC_ALPHA;
+
+        i = ::AlphaBlend
+        (
+            lpdis->hDC,
+            0, 0, bm.bmWidth, bm.bmHeight,
+            hCDC,
+            0, 0, bm.bmWidth, bm.bmHeight,
+            bfn
+        );
+        if(!i)
+        {
+            i = GetLastError();
+        };
+        ::SelectObject(hCDC, hBmpOld);
+        ::DeleteDC(hCDC);
+    };
+};
+
+void CEditDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpdis)
+{
+    int i, idx;
+
+    for(i = 0, idx = -1; buttons_desc[i * 4] && idx < 0; i++)
+        if(buttons_desc[i * 4] == nIDCtl && bmps[i][0])
+            idx = i;
+
+    if(idx >= 0)
+    {
+        BITMAP bm;
+        HBITMAP bmp = bmps[idx][0];
+        ::GetObject(bmp, sizeof(bm), &bm);
+        lpdis->itemWidth = bm.bmWidth;
+        lpdis->itemHeight = bm.bmHeight;
+    };
+};

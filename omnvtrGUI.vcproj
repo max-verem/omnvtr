@@ -306,6 +306,46 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\abort_exporting.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\abort_exporting_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\create_new.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\create_new_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\delete.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\delete_perm.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\delete_perm_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\delete_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\export.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\export_pushed.png"
+				>
+			</File>
+			<File
 				RelativePath=".\src\omnvtrGUI\res\omnvtrGUI.ico"
 				>
 			</File>
@@ -315,6 +355,86 @@
 			</File>
 			<File
 				RelativePath=".\src\omnvtrGUI\res\omnvtrGUI.rc2"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\open.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\open_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\panel_hide.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\panel_hide_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\panel_show.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\panel_show_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\rec_grey.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\rec_grey_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\rec_red.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\rec_red_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\restore.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\restore_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\start_exporting.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\start_exporting_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\undo.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\undo_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\view_list.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\view_list_pushed.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\view_trash.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\view_trash_pushed.png"
 				>
 			</File>
 		</Filter>

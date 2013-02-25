@@ -22,6 +22,7 @@ public:
 
 // Implementation
 protected:
+    HBITMAP bmps[32][2];
 	HICON m_hIcon;
     CToolTipCtrl* m_ToolTip;
     CStatusBarCtrl* m_StatusBar;
@@ -36,6 +37,10 @@ protected:
     int list_area_state;
     void list_area_state_adopt();
     BOOL list_area_notify(unsigned int id);
+    afx_msg void list_area_notify_IDC_BUTTON_LIST_JUNK() { list_area_notify(IDC_BUTTON_LIST_JUNK);};
+    afx_msg void list_area_notify_IDC_BUTTON_LIST_LIST() { list_area_notify(IDC_BUTTON_LIST_LIST);};
+    afx_msg void list_area_notify_IDC_LIST_HIDE() { list_area_notify(IDC_LIST_HIDE);};
+    afx_msg void list_area_notify_IDC_LIST_SHOW() { list_area_notify(IDC_LIST_SHOW);};
     void update_list(int f_deleted);
     BOOL ctl_button(unsigned int id);
 	// Generated message map functions
@@ -45,6 +50,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
     BOOL PreTranslateMessage(MSG* pMsg);
 public:
+    afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
+    afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpdis);
     virtual void COmnCallbackNotify(int id, void* data);
     afx_msg void OnEnKillfocusEditMarkOut();
     afx_msg void OnEnSetfocusEditMarkOut();

@@ -138,6 +138,42 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// PNG
+//
+
+IDB_VIEW_TRASH          PNG                     "res\\icons\\view_trash.png"
+IDB_EXPORT_ABORT        PNG                     "res\\icons\\abort_exporting.png"
+IDB_CREATE              PNG                     "res\\icons\\create_new.png"
+IDB_DELETE              PNG                     "res\\icons\\delete.png"
+IDB_DELETE_PERM         PNG                     "res\\icons\\delete_perm.png"
+IDB_EXPORT              PNG                     "res\\icons\\export.png"
+IDB_OPEN                PNG                     "res\\icons\\open.png"
+IDB_REC_GREY            PNG                     "res\\icons\\rec_grey.png"
+IDB_REC_RED             PNG                     "res\\icons\\rec_red.png"
+IDB_RESTORE             PNG                     "res\\icons\\restore.png"
+IDB_EXPORT_START        PNG                     "res\\icons\\start_exporting.png"
+IDB_UNDO                PNG                     "res\\icons\\undo.png"
+IDB_VIEW_LIST           PNG                     "res\\icons\\view_list.png"
+IDB_PANEL_SHOW          PNG                     "res\\icons\\panel_show.png"
+IDB_PANEL_HIDE          PNG                     "res\\icons\\panel_hide.png"
+IDB_EXPORT_ABORT_PUSHED PNG                     "res\\icons\\abort_exporting_pushed.png"
+IDB_CREATE_PUSHED       PNG                     "res\\icons\\create_new_pushed.png"
+IDB_DELETE_PERM_PUSHED  PNG                     "res\\icons\\delete_perm_pushed.png"
+IDB_EXPORT_PUSHED       PNG                     "res\\icons\\export_pushed.png"
+IDB_OPEN_PUSHED         PNG                     "res\\icons\\open_pushed.png"
+IDB_REC_GREY_PUSHED     PNG                     "res\\icons\\rec_grey_pushed.png"
+IDB_REC_RED_PUSHED      PNG                     "res\\icons\\rec_red_pushed.png"
+IDB_RESTORE_PUSHED      PNG                     "res\\icons\\restore_pushed.png"
+IDB_EXPORT_START_PUSHED PNG                     "res\\icons\\start_exporting_pushed.png"
+IDB_UNDO_PUSHED         PNG                     "res\\icons\\undo_pushed.png"
+IDB_VIEW_LIST_PUSHED    PNG                     "res\\icons\\view_list_pushed.png"
+IDB_VIEW_TRASH_PUSHED   PNG                     "res\\icons\\view_trash_pushed.png"
+IDB_DELETE_PUSHED       PNG                     "res\\icons\\delete_pushed.png"
+IDB_PANEL_SHOW_PUSHED   PNG                     "res\\icons\\panel_show_pushed.png"
+IDB_PANEL_HIDE_PUSHED   PNG                     "res\\icons\\panel_hide_pushed.png"
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -201,8 +237,8 @@ FONT 10, "Arial", 400, 0, 0xCC
 BEGIN
     GROUPBOX        "",IDC_STATIC,2,0,340,37
     GROUPBOX        "",IDC_STATIC,2,38,340,148
-    PUSHBUTTON      "UNDO last\n recording",IDC_BUTTON_UNDO,9,8,71,22,BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
-    PUSHBUTTON      "EXPORT\nrecord",IDC_BUTTON_EXPORT,89,8,71,22,BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
+    CONTROL         "UNDO last\n recording",IDC_BUTTON_UNDO,"Button",BS_OWNERDRAW | BS_BITMAP | BS_MULTILINE | BS_FLAT,9,8,71,22
+    CONTROL         "EXPORT\nrecord",IDC_BUTTON_EXPORT,"Button",BS_OWNERDRAW | BS_BITMAP | BS_MULTILINE | BS_FLAT,89,8,71,22
     EDITTEXT        IDC_EDIT_MARK_IN,9,68,78,14,ES_CENTER | NOT WS_TABSTOP
     EDITTEXT        IDC_EDIT_MARK_OUT,253,70,80,14,ES_CENTER | NOT WS_TABSTOP
     PUSHBUTTON      "<",IDC_BUTTON_GOTO_IN,9,85,17,14,BS_FLAT | NOT WS_TABSTOP
@@ -218,17 +254,18 @@ BEGIN
     PUSHBUTTON      "<<",IDC_BUTTON_CTL_FAST_REV,15,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
     PUSHBUTTON      "- <",IDC_BUTTON_CTL_STEP_REV,58,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
     PUSHBUTTON      "[ | | ]",IDC_BUTTON_CTL_PAUSE,101,142,40,19,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
-    PUSHBUTTON      "REC",IDC_BUTTON_CTL_RECORD,288,151,31,25,BS_FLAT | NOT WS_TABSTOP
+    CONTROL         "REC",IDC_BUTTON_CTL_RECORD,"Button",BS_OWNERDRAW | BS_BITMAP | BS_FLAT,288,142,31,25
     GROUPBOX        "",IDC_LIST_AREA,344,0,254,186
-    PUSHBUTTON      "LIST",IDC_BUTTON_LIST_LIST,539,7,26,18,BS_VCENTER | NOT WS_TABSTOP | BS_CHECKBOX | BS_PUSHLIKE
-    PUSHBUTTON      "JUNK",IDC_BUTTON_LIST_JUNK,568,7,26,18,BS_VCENTER | NOT WS_TABSTOP | BS_CHECKBOX | BS_PUSHLIKE
-    PUSHBUTTON      "CREATE new\nrecord",IDC_BUTTON_LIST_CREATE,346,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
-    PUSHBUTTON      "OPEN\nrecord",IDC_BUTTON_LIST_OPEN,431,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
-    PUSHBUTTON      "DELETE\nrecord",IDC_BUTTON_LIST_DELETE,516,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
-    CONTROL         "",IDC_LIST_RECORDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER,347,27,248,134
-    PUSHBUTTON      "RESTORE\nrecord",IDC_BUTTON_LIST_RESTORE,422,164,80,20,BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT | NOT WS_TABSTOP
-    PUSHBUTTON      "<",IDC_LIST_HIDE,600,59,16,57,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
-    PUSHBUTTON      ">",IDC_LIST_SHOW,351,66,16,57,BS_VCENTER | BS_FLAT | NOT WS_TABSTOP
+    CHECKBOX        "LIST",IDC_BUTTON_LIST_LIST,528,6,32,23,BS_BITMAP | BS_VCENTER | BS_PUSHLIKE | BS_NOTIFY | NOT WS_TABSTOP
+    CHECKBOX        "JUNK",IDC_BUTTON_LIST_JUNK,563,6,31,23,BS_BITMAP | BS_VCENTER | BS_PUSHLIKE | BS_NOTIFY | NOT WS_TABSTOP
+    CONTROL         "CREATE new\nrecord",IDC_BUTTON_LIST_CREATE,"Button",BS_OWNERDRAW | BS_BITMAP | BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT,346,161,81,23
+    CONTROL         "OPEN\nrecord",IDC_BUTTON_LIST_OPEN,"Button",BS_OWNERDRAW | BS_BITMAP | BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT,432,161,85,23
+    CONTROL         "DELETE\nrecord",IDC_BUTTON_LIST_DELETE,"Button",BS_OWNERDRAW | BS_BITMAP | BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT,521,161,74,23
+    CONTROL         "",IDC_LIST_RECORDS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER,347,30,248,129
+    CONTROL         "RESTORE\nrecord",IDC_BUTTON_LIST_RESTORE,"Button",BS_OWNERDRAW | BS_BITMAP | BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT,439,161,80,23
+    CONTROL         "<",IDC_LIST_HIDE,"Button",BS_OWNERDRAW | BS_BITMAP | BS_VCENTER | BS_FLAT,600,59,16,57
+    CONTROL         ">",IDC_LIST_SHOW,"Button",BS_OWNERDRAW | BS_BITMAP | BS_VCENTER | BS_FLAT,351,66,16,57
+    CONTROL         "PERMANENTLY_DELETE",IDC_BUTTON_LIST_DELETE_PERM,"Button",BS_OWNERDRAW | BS_BITMAP | BS_CENTER | BS_VCENTER | BS_MULTILINE | BS_FLAT,525,161,75,23
 END
 
 

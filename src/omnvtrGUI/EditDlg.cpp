@@ -42,6 +42,7 @@ CEditDlg::CEditDlg(CWnd* pParent /*=NULL*/)
 {
     mark_input_id = 0;
     key_W_pressed = 0;
+    m_rec_blink = 0;
 
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -93,6 +94,7 @@ BEGIN_MESSAGE_MAP(CEditDlg, CDialog)
     ON_NOTIFY(NM_RDBLCLK, IDC_LIST_RECORDS, &CEditDlg::OnNMRDblclkListRecords)
     ON_WM_DRAWITEM()
     ON_WM_MEASUREITEM()
+    ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -109,6 +111,8 @@ void CEditDlg::OnTimer(UINT nIDEvent)
         theApp.m_ctl->status();
     else if(TIMER_BLINK_REC == nIDEvent)
     {
+        m_rec_blink++;
+        GetDlgItem(IDC_BUTTON_CTL_RECORD)->RedrawWindow(); //UpdateWindow();
     };
 };
 
@@ -187,7 +191,8 @@ static const int buttons_desc[] =
     IDC_BUTTON_CTL_PLAY,        1,  0,                  0,
     IDC_BUTTON_CTL_STEP_FF,     1,  0,                  0,
     IDC_BUTTON_CTL_FAST_FF,     1,  0,                  0,
-    IDC_BUTTON_CTL_RECORD,      1,  IDB_REC_GREY,       IDB_REC_GREY,
+    IDC_BUTTON_CTL_RECORD,      1,  IDB_REC_GREY,       IDB_REC_GREY_PUSHED,
+    IDC_BUTTON_CTL_RECORD,      0,  IDB_REC_RED,        IDB_REC_RED_PUSHED,
     0, 0, 0, 0
 };
 
@@ -643,7 +648,13 @@ void CEditDlg::COmnCallbackNotify(int id, void* data)
             break;
 
         case COmnCallback::State:
-            m_StatusBar->SetText(OmPlrState_text((OmPlrState)*((int*)data)), 1, 0);
+            r = *((int*)data);
+            if(r != m_omn_state)
+            {
+                m_omn_state = r;
+                RedrawWindow();
+            };
+            m_StatusBar->SetText(OmPlrState_text((OmPlrState)m_omn_state), 1, 0);
             break;
 
         case COmnCallback::Pos:
@@ -949,6 +960,22 @@ void CEditDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
         i = ((CButton*)GetDlgItem(nIDCtl))->GetState();
 //        TRACE("OnDrawItem: item %d, has state %.2X\n", nIDCtl, i);
 
+        if
+        (
+            nIDCtl == IDC_BUTTON_CTL_RECORD
+            &&
+            (
+                m_omn_state == omPlrStateRecord
+                ||
+                (
+                    m_omn_state == omPlrStateCueRecord
+                    &&
+                    (m_rec_blink & 1)
+                )
+            )
+        )
+                idx++;
+
         if(i & BST_PUSHED)
             bmp = bmps[idx][1];
         else
@@ -996,4 +1023,25 @@ void CEditDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpdis)
         lpdis->itemWidth = bm.bmWidth;
         lpdis->itemHeight = bm.bmHeight;
     };
+};
+
+HBRUSH CEditDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+    int id = pWnd->GetDlgCtrlID();
+
+    HBRUSH h = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+
+    if
+    (
+        id == IDC_LABEL_TC
+        &&
+        (
+            m_omn_state == omPlrStateRecord
+            ||
+            m_omn_state == omPlrStateCueRecord
+        )
+    )
+        pDC->SetTextColor(RGB(219, 16, 16));
+
+    return h;
 };

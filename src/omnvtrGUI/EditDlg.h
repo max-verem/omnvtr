@@ -22,6 +22,8 @@ public:
 
 // Implementation
 protected:
+    long long m_rec_blink;
+    int m_omn_state;
     HBITMAP bmps[32][2];
 	HICON m_hIcon;
     CToolTipCtrl* m_ToolTip;
@@ -50,6 +52,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
     BOOL PreTranslateMessage(MSG* pMsg);
 public:
+    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
     afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpdis);
     virtual void COmnCallbackNotify(int id, void* data);

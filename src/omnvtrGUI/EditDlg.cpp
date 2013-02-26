@@ -1035,11 +1035,7 @@ HBRUSH CEditDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     (
         id == IDC_LABEL_TC
         &&
-        (
-            m_omn_state == omPlrStateRecord
-            ||
-            m_omn_state == omPlrStateCueRecord
-        )
+        m_omn_state == omPlrStateRecord
     )
         pDC->SetTextColor(RGB(219, 16, 16));
 

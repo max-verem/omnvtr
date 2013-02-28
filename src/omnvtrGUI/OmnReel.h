@@ -14,6 +14,7 @@ class COmnReel
 //    int add(int id, int def_in, int def_out);
     int lookup(int tc, int* poffset);
     int save();
+    int add_int(int id, int def_in, int def_out, int mark_in, int mark_out);
 public:
     char filename[1024];
     int hist_cnt;
@@ -21,6 +22,7 @@ public:
     int play_dur;
     int play_cnt;
     COmnReelItem_t play_list[COmnReel_list_limit];
+    COmnReelItem_t undo_item;
 
     COmnReel(char* filename, int id, char* title);
     COmnReel(char* filename);
@@ -31,4 +33,6 @@ public:
     int deleted();
     int undeleted();
     int new_title(char* title);
+    int undo();
+    int undo_clear();
 };

@@ -66,4 +66,5 @@ public:
     int destroy_reel(int id);
     int undelete_reel(int id);
     int retitle_reel(int id, char *title);
+    int undo();
 };

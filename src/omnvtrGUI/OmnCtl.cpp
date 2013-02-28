@@ -186,6 +186,14 @@ int COmnCtl::status()
                 cb->COmnCallbackNotify(COmnCallback::ReelsUpdated, NULL);
         };
 
+        /* delete undo item*/
+        r = reel->undo_clear();
+        if(r)
+        {
+            _snprintf(buf, sizeof(buf), "%d", r);
+            OmPlrClipDelete(handle, buf);
+        };
+
         /* load clip and seek to pos */
         if(mark_in < 0)
             reload_reel(reel->dur());
@@ -701,5 +709,25 @@ int COmnCtl::retitle_reel(int id, char *title)
         reel->new_title(title);
         delete reel;
     };
+    return 0;
+};
+
+int COmnCtl::undo()
+{
+    int r;
+
+    if(!reel)
+        return -1;
+
+    if(!handle)
+        return -1;
+
+    r = reel->undo();
+    if(r < 0)
+        return r;
+
+    /* reseek */
+    reload_reel(reel->dur());
+
     return 0;
 };

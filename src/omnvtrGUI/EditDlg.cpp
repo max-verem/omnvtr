@@ -95,6 +95,8 @@ BEGIN_MESSAGE_MAP(CEditDlg, CDialog)
     ON_WM_DRAWITEM()
     ON_WM_MEASUREITEM()
     ON_WM_CTLCOLOR()
+    ON_BN_CLICKED(IDC_BUTTON_UNDO, &CEditDlg::OnBnClickedButtonUndo)
+    ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_RECORDS, &CEditDlg::OnLvnItemchangedListRecords)
 END_MESSAGE_MAP()
 
 
@@ -166,6 +168,8 @@ void CEditDlg::update_list(int f_deleted)
 
         free(list);
     };
+
+    OnLvnItemchangedListRecords(NULL, NULL);
 };
 
 static const int buttons_desc[] =
@@ -347,6 +351,14 @@ BOOL CEditDlg::PreTranslateMessage(MSG* pMsg)
     {
         switch(pMsg->wParam)
         {
+            case 'z':
+            case 'Z':
+                if(GetKeyState(VK_CONTROL)< 0)
+                {
+                    OnBnClickedButtonUndo();
+                    return TRUE;
+                };
+                break;
             case 'e':
             case 'E':
                 if(GetKeyState(VK_CONTROL)< 0)
@@ -1041,3 +1053,38 @@ HBRUSH CEditDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
     return h;
 };
+
+void CEditDlg::OnBnClickedButtonUndo()
+{
+    theApp.m_ctl->undo();
+    update_list(list_area_state & LIST_AREA_STATE_JUNK);
+}
+
+void CEditDlg::OnLvnItemchangedListRecords(NMHDR *pNMHDR, LRESULT *pResult)
+{
+    int i, r = 0;
+    static const int ids[] =
+    {
+        IDC_BUTTON_LIST_CREATE,
+        IDC_BUTTON_LIST_OPEN,
+        IDC_BUTTON_LIST_RESTORE,
+        IDC_BUTTON_LIST_DELETE,
+        IDC_BUTTON_LIST_DELETE_PERM,
+        0
+    };
+
+    LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+    if(pResult)
+        *pResult = 0;
+
+    if(((CListCtrl*)GetDlgItem(IDC_LIST_RECORDS))->
+        GetFirstSelectedItemPosition())
+        r = 1;
+    TRACE("OnLvnItemchangedListRecords: r=%d\n", r);
+    for(i = 0; i < ids[i]; i++)
+    {
+        CWnd* w = GetDlgItem(i);
+        if(w)
+            w->EnableWindow(r);
+    };
+}

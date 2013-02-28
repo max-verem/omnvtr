@@ -9,6 +9,7 @@ COmnReel::COmnReel(char* filename, int id, char* title)
     strncpy(this->title, title, sizeof(this->title));
     created_on = modified_on = id;
     deleted_on = 0;
+    undo_clear();
     save();
 };
 
@@ -20,6 +21,8 @@ COmnReel::COmnReel(char* filename)
     hist_cnt = 0;
     play_cnt = 0;
     title[0] = 0;
+
+    undo_clear();
 
     /* store filename */
     strncpy(this->filename, filename, sizeof(this->filename));
@@ -64,17 +67,9 @@ COmnReel::COmnReel(char* filename)
     };
 };
 
-int COmnReel::add(int id, int clip_in, int clip_out, int mark_in, int mark_out, int f_save)
+int COmnReel::add_int(int id, int clip_in, int clip_out, int mark_in, int mark_out)
 {
     int idx_in, idx_out, offset_in, offset_out;
-
-    /* store data in history list */
-    hist_list[hist_cnt].id = id;
-    hist_list[hist_cnt].clip_in = clip_in;
-    hist_list[hist_cnt].clip_out = clip_out;
-    hist_list[hist_cnt].mark_in = mark_in;
-    hist_list[hist_cnt].mark_out = mark_out;
-    hist_cnt++;
 
     /* find item index where to overlap */
     if(mark_in < 0 || (idx_in = lookup(mark_in, &offset_in)) < 0)
@@ -141,6 +136,21 @@ int COmnReel::add(int id, int clip_in, int clip_out, int mark_in, int mark_out, 
             + play_list[idx_in].clip_out
             - play_list[idx_in].clip_in;
     };
+
+    return 0;
+};
+
+int COmnReel::add(int id, int clip_in, int clip_out, int mark_in, int mark_out, int f_save)
+{
+    /* store data in history list */
+    hist_list[hist_cnt].id = id;
+    hist_list[hist_cnt].clip_in = clip_in;
+    hist_list[hist_cnt].clip_out = clip_out;
+    hist_list[hist_cnt].mark_in = mark_in;
+    hist_list[hist_cnt].mark_out = mark_out;
+    hist_cnt++;
+
+    add_int(id, clip_in, clip_out, mark_in, mark_out);
 
     if(f_save)
     {
@@ -225,4 +235,50 @@ int COmnReel::new_title(char* title)
     strncpy(this->title, title, sizeof(this->title));
     save();
     return 0;
+};
+
+int COmnReel::undo_clear()
+{
+    int r;
+
+    r = undo_item.id;
+
+    memset(&undo_item, 0, sizeof(undo_item));
+
+    return r;
+};
+
+int COmnReel::undo()
+{
+    int i;
+
+    /* check for undo item */
+    if(undo_item.id)
+    {
+        add_int(undo_item.id, undo_item.clip_in, undo_item.clip_out, undo_item.mark_in, undo_item.mark_out);
+        save();
+        return 0;
+    };
+
+    if(!hist_cnt)
+        return -1;
+
+    /* save deleted id and decrement number */
+    undo_item = hist_list[--hist_cnt];
+
+    /* save reel */
+    save();
+
+    /* rebuild playlist */
+    for(i = 0, play_cnt = 0; i < hist_cnt; i++)
+        add_int
+        (
+            hist_list[i].id,
+            hist_list[i].clip_in,
+            hist_list[i].clip_out,
+            hist_list[i].mark_in,
+            hist_list[i].mark_out
+        );
+
+    return undo_item.id;
 };

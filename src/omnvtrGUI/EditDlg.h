@@ -69,4 +69,6 @@ public:
     afx_msg void OnBnClickedButtonListOpen();
     afx_msg void OnBnClickedButtonExport();
     afx_msg void OnNMRDblclkListRecords(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnBnClickedButtonUndo();
+    afx_msg void OnLvnItemchangedListRecords(NMHDR *pNMHDR, LRESULT *pResult);
 };

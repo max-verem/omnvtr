@@ -38,6 +38,14 @@
 #define IDB_PANEL_SHOW_PUSHED           187
 #define IDB_PNG2                        188
 #define IDB_PANEL_HIDE_PUSHED           188
+#define IDB_UNDO_DISABLED               189
+#define IDB_DELETE_PERM_DISABLED        190
+#define IDB_EXPORT_DISABLED             191
+#define IDB_OPEN_DISABLED               192
+#define IDB_REC_GREY_DISABLED           193
+#define IDB_RESTORE_DISABLED            194
+#define IDB_PNG1                        196
+#define IDB_DELETE_DISABLED             196
 #define IDC_BUTTON_UNDO                 1001
 #define IDC_BUTTON_EXPORT               1002
 #define IDC_EDIT_MARK_IN                1003
@@ -89,7 +97,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        189
+#define _APS_NEXT_RESOURCE_VALUE        197
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1041
 #define _APS_NEXT_SYMED_VALUE           101

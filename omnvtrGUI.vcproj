@@ -326,7 +326,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\delete_disabled.png"
+				>
+			</File>
+			<File
 				RelativePath=".\src\omnvtrGUI\res\icons\delete_perm.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\delete_perm_disabled.png"
 				>
 			</File>
 			<File
@@ -339,6 +347,10 @@
 			</File>
 			<File
 				RelativePath=".\src\omnvtrGUI\res\icons\export.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\export_disabled.png"
 				>
 			</File>
 			<File
@@ -359,6 +371,10 @@
 			</File>
 			<File
 				RelativePath=".\src\omnvtrGUI\res\icons\open.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\open_disabled.png"
 				>
 			</File>
 			<File
@@ -386,6 +402,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\rec_grey_disabled.png"
+				>
+			</File>
+			<File
 				RelativePath=".\src\omnvtrGUI\res\icons\rec_grey_pushed.png"
 				>
 			</File>
@@ -402,6 +422,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\restore_disabled.png"
+				>
+			</File>
+			<File
 				RelativePath=".\src\omnvtrGUI\res\icons\restore_pushed.png"
 				>
 			</File>
@@ -415,6 +439,10 @@
 			</File>
 			<File
 				RelativePath=".\src\omnvtrGUI\res\icons\undo.png"
+				>
+			</File>
+			<File
+				RelativePath=".\src\omnvtrGUI\res\icons\undo_disabled.png"
 				>
 			</File>
 			<File

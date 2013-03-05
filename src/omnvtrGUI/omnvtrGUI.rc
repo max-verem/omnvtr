@@ -164,13 +164,20 @@ IDB_OPEN_PUSHED         PNG                     "res\\icons\\open_pushed.png"
 IDB_REC_GREY_PUSHED     PNG                     "res\\icons\\rec_grey_pushed.png"
 IDB_REC_RED_PUSHED      PNG                     "res\\icons\\rec_red_pushed.png"
 IDB_RESTORE_PUSHED      PNG                     "res\\icons\\restore_pushed.png"
-IDB_EXPORT_START_PUSHED PNG                     "res\\icons\\start_exporting_pushed.png"
+IDB_EXPORT_START_PUSHED PNG                     "C:\\projects\\omnvtr\\src\\omnvtrGUI\\res\\icons\\start_exporting_pushed.png"
 IDB_UNDO_PUSHED         PNG                     "res\\icons\\undo_pushed.png"
 IDB_VIEW_LIST_PUSHED    PNG                     "res\\icons\\view_list_pushed.png"
 IDB_VIEW_TRASH_PUSHED   PNG                     "res\\icons\\view_trash_pushed.png"
 IDB_DELETE_PUSHED       PNG                     "res\\icons\\delete_pushed.png"
 IDB_PANEL_SHOW_PUSHED   PNG                     "res\\icons\\panel_show_pushed.png"
 IDB_PANEL_HIDE_PUSHED   PNG                     "res\\icons\\panel_hide_pushed.png"
+IDB_UNDO_DISABLED       PNG                     "res\\icons\\undo_disabled.png"
+IDB_DELETE_PERM_DISABLED PNG                     "res\\icons\\delete_perm_disabled.png"
+IDB_EXPORT_DISABLED     PNG                     "res\\icons\\export_disabled.png"
+IDB_OPEN_DISABLED       PNG                     "res\\icons\\open_disabled.png"
+IDB_REC_GREY_DISABLED   PNG                     "res\\icons\\rec_grey_disabled.png"
+IDB_RESTORE_DISABLED    PNG                     "res\\icons\\restore_disabled.png"
+IDB_DELETE_DISABLED     PNG                     "res\\icons\\delete_disabled.png"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -205,7 +212,7 @@ END
 STRINGTABLE 
 BEGIN
     IDC_BUTTON_UNDO         "Undo last cut [Ctrl-Z]"
-    IDC_BUTTON_EXPORT       "Export to file"
+    IDC_BUTTON_EXPORT       "Export to file [Ctrl-E]"
     IDC_BUTTON_GOTO_IN      "Go to IN mark"
     IDC_BUTTON_GOTO_OUT     "Go to OUT mark"
     IDC_BUTTON_MARK_IN      "Set IN mark. If it set, recording begins from this point [I]"

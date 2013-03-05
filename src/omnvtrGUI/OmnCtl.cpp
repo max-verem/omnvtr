@@ -279,7 +279,7 @@ int COmnCtl::new_reel(char *title)
 
     reload_reel(mark_curr = 0);
 
-    return 0;
+    return (int)id;
 };
 
 int COmnCtl::load_reel(int id)

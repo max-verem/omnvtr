@@ -24,7 +24,7 @@ public:
 protected:
     long long m_rec_blink;
     int m_omn_state;
-    HBITMAP bmps[32][2];
+    HBITMAP bmps[32][3];
 	HICON m_hIcon;
     CToolTipCtrl* m_ToolTip;
     CStatusBarCtrl* m_StatusBar;

@@ -172,31 +172,33 @@ void CEditDlg::update_list(int f_deleted)
     OnLvnItemchangedListRecords(NULL, NULL);
 };
 
+static const int buttons_desc_step = 5;
 static const int buttons_desc[] =
 {
-    IDC_LIST_SHOW,              1,  IDB_PANEL_SHOW,     IDB_PANEL_SHOW_PUSHED,
-    IDC_LIST_HIDE,              1,  IDB_PANEL_HIDE,     IDB_PANEL_HIDE_PUSHED,
-    IDC_BUTTON_LIST_LIST,       1,  IDB_VIEW_LIST,      IDB_VIEW_LIST_PUSHED,
-    IDC_BUTTON_LIST_JUNK,       1,  IDB_VIEW_TRASH,     IDB_VIEW_TRASH_PUSHED,
-    IDC_BUTTON_LIST_CREATE,     1,  IDB_CREATE,         IDB_CREATE_PUSHED,
-    IDC_BUTTON_LIST_OPEN,       1,  IDB_OPEN,           IDB_OPEN_PUSHED,
-    IDC_BUTTON_LIST_DELETE,     1,  IDB_DELETE,         IDB_DELETE_PUSHED,
-    IDC_BUTTON_LIST_DELETE_PERM,1,  IDB_DELETE_PERM,    IDB_DELETE_PERM_PUSHED,
-    IDC_BUTTON_LIST_RESTORE,    1,  IDB_RESTORE,        IDB_RESTORE_PUSHED,
-    IDC_BUTTON_UNDO,            1,  IDB_UNDO,           IDB_UNDO_PUSHED,
-    IDC_BUTTON_EXPORT,          1,  IDB_EXPORT,         IDB_EXPORT_PUSHED,
-    IDC_BUTTON_GOTO_IN,         1,  0,                  0,
-    IDC_BUTTON_GOTO_OUT,        1,  0,                  0,
-    IDC_BUTTON_MARK_IN,         1,  0,                  0,
-    IDC_BUTTON_MARK_OUT,        1,  0,                  0,
-    IDC_BUTTON_CTL_FAST_REV,    1,  0,                  0,
-    IDC_BUTTON_CTL_STEP_REV,    1,  0,                  0,
-    IDC_BUTTON_CTL_PAUSE,       1,  0,                  0,
-    IDC_BUTTON_CTL_PLAY,        1,  0,                  0,
-    IDC_BUTTON_CTL_STEP_FF,     1,  0,                  0,
-    IDC_BUTTON_CTL_FAST_FF,     1,  0,                  0,
-    IDC_BUTTON_CTL_RECORD,      1,  IDB_REC_GREY,       IDB_REC_GREY_PUSHED,
-    IDC_BUTTON_CTL_RECORD,      0,  IDB_REC_RED,        IDB_REC_RED_PUSHED,
+    IDC_BUTTON_LIST_OPEN,       1,  IDB_OPEN,           IDB_OPEN_PUSHED,        IDB_OPEN_DISABLED,
+    IDC_LIST_SHOW,              1,  IDB_PANEL_SHOW,     IDB_PANEL_SHOW_PUSHED,  IDB_PANEL_SHOW,
+    IDC_LIST_HIDE,              1,  IDB_PANEL_HIDE,     IDB_PANEL_HIDE_PUSHED,  IDB_PANEL_HIDE,
+    IDC_BUTTON_LIST_LIST,       1,  IDB_VIEW_LIST,      IDB_VIEW_LIST_PUSHED,   IDB_VIEW_LIST,
+    IDC_BUTTON_LIST_JUNK,       1,  IDB_VIEW_TRASH,     IDB_VIEW_TRASH_PUSHED,  IDB_VIEW_TRASH,
+    IDC_BUTTON_LIST_CREATE,     1,  IDB_CREATE,         IDB_CREATE_PUSHED,      IDB_CREATE,
+    IDC_BUTTON_LIST_OPEN,       1,  IDB_OPEN,           IDB_OPEN_PUSHED,        IDB_OPEN_DISABLED,
+    IDC_BUTTON_LIST_DELETE,     1,  IDB_DELETE,         IDB_DELETE_PUSHED,      IDB_DELETE_DISABLED,
+    IDC_BUTTON_LIST_DELETE_PERM,1,  IDB_DELETE_PERM,    IDB_DELETE_PERM_PUSHED, IDB_DELETE_PERM_DISABLED,
+    IDC_BUTTON_LIST_RESTORE,    1,  IDB_RESTORE,        IDB_RESTORE_PUSHED,     IDB_RESTORE_DISABLED,
+    IDC_BUTTON_UNDO,            1,  IDB_UNDO,           IDB_UNDO_PUSHED,        IDB_UNDO_DISABLED,
+    IDC_BUTTON_EXPORT,          1,  IDB_EXPORT,         IDB_EXPORT_PUSHED,      IDB_EXPORT_DISABLED,
+    IDC_BUTTON_GOTO_IN,         1,  0,                  0,                      0,
+    IDC_BUTTON_GOTO_OUT,        1,  0,                  0,                      0,
+    IDC_BUTTON_MARK_IN,         1,  0,                  0,                      0,
+    IDC_BUTTON_MARK_OUT,        1,  0,                  0,                      0,
+    IDC_BUTTON_CTL_FAST_REV,    1,  0,                  0,                      0,
+    IDC_BUTTON_CTL_STEP_REV,    1,  0,                  0,                      0,
+    IDC_BUTTON_CTL_PAUSE,       1,  0,                  0,                      0,
+    IDC_BUTTON_CTL_PLAY,        1,  0,                  0,                      0,
+    IDC_BUTTON_CTL_STEP_FF,     1,  0,                  0,                      0,
+    IDC_BUTTON_CTL_FAST_FF,     1,  0,                  0,                      0,
+    IDC_BUTTON_CTL_RECORD,      1,  IDB_REC_GREY,       IDB_REC_GREY_PUSHED,    IDB_REC_GREY_DISABLED,
+    IDC_BUTTON_CTL_RECORD,      0,  IDB_REC_RED,        IDB_REC_RED_PUSHED,     IDB_REC_RED,
     0, 0, 0, 0
 };
 
@@ -220,7 +222,7 @@ BOOL CEditDlg::OnInitDialog()
     m_ToolTip = new CToolTipCtrl();
     if(m_ToolTip->Create(this))
     {
-        for(i = 0; buttons_desc[i]; i += 4)
+        for(i = 0; buttons_desc[i]; i += buttons_desc_step)
             if(buttons_desc[i + 1])
                 m_ToolTip->AddTool(GetDlgItem(buttons_desc[i]),
                     buttons_desc[i]);
@@ -278,14 +280,16 @@ BOOL CEditDlg::OnInitDialog()
     update_list(0);
 
     /* try to set images for buttons */
-    for(i = 0; buttons_desc[i]; i += 4)
+    for(i = 0; buttons_desc[i]; i += buttons_desc_step)
     {
         CPngImage image;
 
         if(buttons_desc[i + 2] && image.Load(buttons_desc[i + 2], GetModuleHandle(NULL)))
-            bmps[i / 4][0] = (HBITMAP)image.Detach();
+            bmps[i / buttons_desc_step][0] = (HBITMAP)image.Detach();
         if(buttons_desc[i + 3] && image.Load(buttons_desc[i + 3], GetModuleHandle(NULL)))
-            bmps[i / 4][1] = (HBITMAP)image.Detach();
+            bmps[i / buttons_desc_step][1] = (HBITMAP)image.Detach();
+        if(buttons_desc[i + 4] && image.Load(buttons_desc[i + 4], GetModuleHandle(NULL)))
+            bmps[i / buttons_desc_step][2] = (HBITMAP)image.Detach();
     };
 
     GetDlgItem(IDC_BUTTON_LIST_JUNK)->
@@ -347,26 +351,30 @@ BOOL CEditDlg::PreTranslateMessage(MSG* pMsg)
         };
     };
 
+    /* control-X */
+    if(!mark_input_id && GetKeyState(VK_CONTROL)< 0)
+    {
+        if(pMsg->wParam == 'N')
+        {
+            OnBnClickedButtonListCreate();
+            return TRUE;
+        };
+        if(pMsg->wParam == 'Z')
+        {
+            OnBnClickedButtonUndo();
+            return TRUE;
+        };
+        if(pMsg->wParam == 'E')
+        {
+            OnBnClickedButtonExport();
+            return TRUE;
+        };
+    };
+
     if(pMsg->message == WM_KEYDOWN)
     {
         switch(pMsg->wParam)
         {
-            case 'z':
-            case 'Z':
-                if(GetKeyState(VK_CONTROL)< 0)
-                {
-                    OnBnClickedButtonUndo();
-                    return TRUE;
-                };
-                break;
-            case 'e':
-            case 'E':
-                if(GetKeyState(VK_CONTROL)< 0)
-                {
-                    OnBnClickedButtonExport();
-                    return TRUE;
-                };
-                break;
             case 'W':
                 key_W_pressed = 1;
                 return TRUE;
@@ -380,6 +388,14 @@ BOOL CEditDlg::PreTranslateMessage(MSG* pMsg)
             case 'O':
                 theApp.m_ctl->oper_mark_out();
                 return TRUE;
+                break;
+
+            case VK_DELETE:
+                if(!mark_input_id)
+                {
+                    OnBnClickedButtonListDelete();
+                    return TRUE;
+                };
                 break;
 
             case VK_ESCAPE:
@@ -742,7 +758,8 @@ void CEditDlg::OnBnClickedButtonListCreate()
     r = dlg.DoModal();
     if(r == IDOK)
     {
-        theApp.m_ctl->new_reel((LPTSTR)(LPCSTR)dlg.m_title);
+        r = theApp.m_ctl->new_reel((LPTSTR)(LPCSTR)dlg.m_title);
+        theApp.m_ctl->load_reel(r);
         update_list(0);
     };
 }
@@ -956,8 +973,8 @@ void CEditDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
 {
     int idx, i;
 
-    for(i = 0, idx = -1; buttons_desc[i * 4] && idx < 0; i++)
-        if(buttons_desc[i * 4] == nIDCtl && bmps[i][0])
+    for(i = 0, idx = -1; buttons_desc[i * buttons_desc_step] && idx < 0; i++)
+        if(buttons_desc[i * buttons_desc_step] == nIDCtl && bmps[i][0])
             idx = i;
 
     if(idx >= 0)
@@ -970,7 +987,7 @@ void CEditDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
         FillSolidRect(lpdis->hDC, &lpdis->rcItem, ::GetSysColor(COLOR_BTNFACE));
 
         i = ((CButton*)GetDlgItem(nIDCtl))->GetState();
-//        TRACE("OnDrawItem: item %d, has state %.2X\n", nIDCtl, i);
+        TRACE("OnDrawItem: item %d, has state %.2X\n", nIDCtl, i);
 
         if
         (
@@ -988,10 +1005,15 @@ void CEditDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
         )
                 idx++;
 
-        if(i & BST_PUSHED)
-            bmp = bmps[idx][1];
+        if(!GetDlgItem(nIDCtl)->IsWindowEnabled())
+            bmp = bmps[idx][2];
         else
-            bmp = bmps[idx][0];
+        {
+            if(i & BST_PUSHED)
+                bmp = bmps[idx][1];
+            else
+                bmp = bmps[idx][0];
+        };
 
         hBmpOld = (HBITMAP)::SelectObject(hCDC, bmp);
 
@@ -1023,8 +1045,8 @@ void CEditDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpdis)
 {
     int i, idx;
 
-    for(i = 0, idx = -1; buttons_desc[i * 4] && idx < 0; i++)
-        if(buttons_desc[i * 4] == nIDCtl && bmps[i][0])
+    for(i = 0, idx = -1; buttons_desc[i * buttons_desc_step] && idx < 0; i++)
+        if(buttons_desc[i * buttons_desc_step] == nIDCtl && bmps[i][0])
             idx = i;
 
     if(idx >= 0)
@@ -1065,7 +1087,6 @@ void CEditDlg::OnLvnItemchangedListRecords(NMHDR *pNMHDR, LRESULT *pResult)
     int i, r = 0;
     static const int ids[] =
     {
-        IDC_BUTTON_LIST_CREATE,
         IDC_BUTTON_LIST_OPEN,
         IDC_BUTTON_LIST_RESTORE,
         IDC_BUTTON_LIST_DELETE,
@@ -1081,10 +1102,13 @@ void CEditDlg::OnLvnItemchangedListRecords(NMHDR *pNMHDR, LRESULT *pResult)
         GetFirstSelectedItemPosition())
         r = 1;
     TRACE("OnLvnItemchangedListRecords: r=%d\n", r);
-    for(i = 0; i < ids[i]; i++)
+    for(i = 0; ids[i]; i++)
     {
-        CWnd* w = GetDlgItem(i);
+        CWnd* w = GetDlgItem(ids[i]);
         if(w)
+        {
             w->EnableWindow(r);
+//            w->UpdateWindow();
+        };
     };
 }

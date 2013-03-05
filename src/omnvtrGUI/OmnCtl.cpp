@@ -304,6 +304,28 @@ int COmnCtl::load_reel(int id)
     return 0;
 };
 
+int COmnCtl::unload_reel()
+{
+    if(reel)
+    {
+        delete reel;
+        reel = NULL;
+    };
+
+    set_mark_in(-1);
+    set_mark_out(-1);
+
+    WaitForSingleObject(lock, INFINITE);
+    OmPlrStop(handle);
+    OmPlrDetachAllClips(handle);
+    ReleaseMutex(lock);
+
+    if(cb)
+        cb->COmnCallbackNotify(COmnCallback::Reel, NULL);
+
+    return 0;
+};
+
 int COmnCtl::get_pos()
 {
     int p = status_curr.pos;
@@ -671,8 +693,9 @@ int COmnCtl::destroy_reel(int id)
     WaitForSingleObject(lock, INFINITE);
 
     if(reel && reel->created_on == id)
-        reel->deleted();
-    else if(handle)
+        unload_reel();
+
+    if(handle)
     {
         int i, r;
         COmnReel* reel = list_reel(id);

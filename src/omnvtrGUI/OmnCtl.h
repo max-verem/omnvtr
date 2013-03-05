@@ -42,6 +42,7 @@ public:
     char* get_reel_title();
     int reload_reel(int offset);
     int load_reel(int id);
+    int unload_reel();
     int new_reel(char *title);
     COmnReel** list_reels();
     COmnReel* list_reel(int id);

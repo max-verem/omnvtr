@@ -142,6 +142,8 @@ int COmnReel::add_int(int id, int clip_in, int clip_out, int mark_in, int mark_o
 
 int COmnReel::add(int id, int clip_in, int clip_out, int mark_in, int mark_out, int f_save)
 {
+    undo_clear();
+
     /* store data in history list */
     hist_list[hist_cnt].id = id;
     hist_list[hist_cnt].clip_in = clip_in;
@@ -254,11 +256,7 @@ int COmnReel::undo()
 
     /* check for undo item */
     if(undo_item.id)
-    {
-        add_int(undo_item.id, undo_item.clip_in, undo_item.clip_out, undo_item.mark_in, undo_item.mark_out);
-        save();
-        return 0;
-    };
+        return add(undo_item.id, undo_item.clip_in, undo_item.clip_out, undo_item.mark_in, undo_item.mark_out, 1);
 
     if(!hist_cnt)
         return -1;

@@ -319,7 +319,7 @@ void CExportDlg::OnTimer(UINT nIDEvent)
     {
         if(e < 0)
         {
-            MessageBox("Error happens or aborted", "Error!");
+            MessageBox("Error happens or aborted\ncheck if overwrite required", "Error!");
             GetDlgItem(IDC_COMBO_DIRS)->EnableWindow(1);
             GetDlgItem(IDC_COMBO_TYPES)->EnableWindow(1);
             GetDlgItem(IDC_EDIT_ID)->EnableWindow(1);
@@ -442,7 +442,8 @@ void CExportDlg::OnBnClickedButtonStart()
         id_selected,
         "mov"
     );
-    r = ctx->omc->setDestination(file_target, 1);
+    r = ((CButton*)GetDlgItem(IDC_OVERWRITE))->GetCheck();
+    r = ctx->omc->setDestination(file_target, (r == BST_CHECKED)?1:0);
     r = ctx->omc->setOutputSuffix(omMediaFileTypeQt, "mov");
     ctx->omc->setCopyType(t);
 

@@ -610,7 +610,7 @@ BOOL CEditDlg::ctl_button(unsigned int id)
             theApp.m_ctl->oper_step_rev();
             break;
         case IDC_BUTTON_CTL_PAUSE:
-            theApp.m_ctl->oper_play_stop();
+            theApp.m_ctl->oper_play_record_stop();
             break;
         case IDC_BUTTON_CTL_PLAY:
             theApp.m_ctl->oper_play();

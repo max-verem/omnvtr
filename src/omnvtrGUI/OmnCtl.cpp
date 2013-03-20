@@ -418,33 +418,6 @@ COmnReel** COmnCtl::list_reels()
     return list;
 };
 
-void COmnCtl::oper_record_record()
-{
-#if 0
-    if(theApp.cmdInfo.m_syncplay_omneon_player[0] &&
-        theApp.cmdInfo.m_syncplay_omneon_host[0])
-    {
-        int r;
-        OmPlrHandle h;
-
-        /* open director */
-        r = OmPlrOpen
-        (
-            theApp.cmdInfo.m_syncplay_omneon_host,
-            theApp.cmdInfo.m_syncplay_omneon_player,
-            &h
-        );
-        if(!r)
-        {
-            OmPlrPlay(h, 1.0);
-            OmPlrClose(h);
-            Sleep(theApp.cmdInfo.m_syncplay_delay);
-        }
-    };
-#endif
-    OmPlrRecord(handle);
-};
-
 void COmnCtl::oper_record_cue()
 {
     int r;
@@ -500,7 +473,9 @@ void COmnCtl::oper_record()
         if(status_curr.state == omPlrStatePlay)
             oper_record_cue();
         else if(status_curr.state == omPlrStateCueRecord)
-            oper_record_record();
+            OmPlrRecord(handle);
+        else if(status_curr.state == omPlrStateRecord)
+            OmPlrStop(handle);
     };
     ReleaseMutex(lock);
 };
@@ -651,7 +626,7 @@ int COmnCtl::set_mark_out(int m)
     return 0;
 };
 
-void COmnCtl::oper_play_stop()
+void COmnCtl::oper_play_record_stop()
 {
     int r;
     WaitForSingleObject(lock, INFINITE);
@@ -671,6 +646,23 @@ void COmnCtl::oper_play_stop()
             status_curr.state == omPlrStateCueRecord
         )
             r = OmPlrStop(handle);
+    };
+    ReleaseMutex(lock);
+};
+
+void COmnCtl::oper_play_stop()
+{
+    int r;
+    WaitForSingleObject(lock, INFINITE);
+    if(handle)
+    {
+        if(status_curr.state == omPlrStatePlay)
+        {
+            if(0.0 == status_curr.rate)
+                r = OmPlrPlay(handle, 1.0);
+            else
+                r = OmPlrPlay(handle, 0.0);
+        };
     };
     ReleaseMutex(lock);
 };

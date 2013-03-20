@@ -57,9 +57,9 @@ public:
     void oper_mark_in();
     void oper_goto_out();
     void oper_goto_in();
-    void oper_record_record();
     void oper_record_cue();
     void oper_play_stop();
+    void oper_play_record_stop();
     void oper_vary_play(double s);
     void set_cb(COmnCallback* c) { cb = c; };
     int set_mark_in(int m);

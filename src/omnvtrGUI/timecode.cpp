@@ -12,13 +12,18 @@ char* tc_frames2txt(int frames, char* buf)
     static int bs[] = {24, 60, 60, (long)FPS};
     char *buf_out = buf;
     int i, r;
-    
+
     /* check for negative */
     if(frames < 0)
     {
+#ifdef _DEBUG
+        strcpy(buf, "--:--:--:--");
+        return buf;
+#else
         buf[0] = '-';
         frames = -frames;
         buf++;
+#endif
     };
 
     /* setup datas */

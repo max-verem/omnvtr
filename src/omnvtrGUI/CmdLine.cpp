@@ -176,7 +176,6 @@ int CmdLine::check_params()
     DEF_CHECK(omneon_host);
     DEF_CHECK(omneon_player);
     DEF_CHECK(omneon_dir);
-    if(m_msc3_serial_port < 0) err_msg_not_set = "msc3_serial_port";
 
     if(err_msg_not_set)
     {

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "OmnReel.h"
+#include "timecode.h"
 
 COmnReel::COmnReel(char* filename, int id, char* title)
 {
@@ -71,6 +72,15 @@ int COmnReel::add_int(int id, int clip_in, int clip_out, int mark_in, int mark_o
 {
     int idx_in, idx_out, offset_in, offset_out;
 
+char tmp1[4][32];
+TRACE("add_int(%s %s %s %s %d)\n",
+    tc_frames2txt(mark_in, tmp1[2]),
+    tc_frames2txt(mark_out, tmp1[3]),
+    tc_frames2txt(clip_in, tmp1[0]),
+    tc_frames2txt(clip_out, tmp1[1]),
+    id
+);
+
     /* find item index where to overlap */
     if(mark_in < 0 || (idx_in = lookup(mark_in, &offset_in)) < 0)
     {
@@ -135,7 +145,18 @@ int COmnReel::add_int(int id, int clip_in, int clip_out, int mark_in, int mark_o
               play_list[idx_in].mark_in
             + play_list[idx_in].clip_out
             - play_list[idx_in].clip_in;
+
+TRACE("== %s %s %s %s %d)\n",
+    tc_frames2txt(play_list[idx_in].mark_in, tmp1[2]),
+    tc_frames2txt(play_list[idx_in].mark_out, tmp1[3]),
+    tc_frames2txt(play_list[idx_in].clip_in, tmp1[0]),
+    tc_frames2txt(play_list[idx_in].clip_out, tmp1[1]),
+    play_list[idx_in].id
+);
+
     };
+
+TRACE("***************************\n");
 
     return 0;
 };

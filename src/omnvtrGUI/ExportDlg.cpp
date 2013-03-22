@@ -1,5 +1,13 @@
-// C:\projects\omnvtr\src\omnvtrGUI\ExportDlg.cpp : implementation file
-//
+/*
+
+# normal startup
+/msc3_serial_port 9 /omneon_host omneon-2b.internal.m1stereo.tv /omneon_player Play_10 /omneon_dir \FS0\omnvtr /export_dir \FS0\ingest /export_dir \FS0\studiorec /export_dir \FS0\clip.dir
+
+
+# export startup
+/export  /edl  1363760010  /omneon_host omneon-2b.internal.m1stereo.tv /omneon_player Play_10 /omneon_dir \FS0\omnvtr /export_dir \FS0\ingest /export_dir \FS0\studiorec /export_dir \FS0\clip.dir
+
+*/
 
 #include "stdafx.h"
 #include "omnvtrGUI.h"
@@ -383,7 +391,7 @@ BOOL CExportDlg::PreTranslateMessage(MSG* pMsg)
 
 void CExportDlg::OnBnClickedButtonStart()
 {
-    int i, r;
+    int i, r, m_in, m_out;
     export_ctx_t* ctx;
     char buf[1024], file_origin[256], id_selected[256], file_target[256];
 
@@ -447,8 +455,12 @@ void CExportDlg::OnBnClickedButtonStart()
     r = ctx->omc->setOutputSuffix(omMediaFileTypeQt, "mov");
     ctx->omc->setCopyType(t);
 
+    m_in = theApp.m_ctl->get_mark_in();
+    m_out = theApp.m_ctl->get_mark_out();
     for(i = 0; i < m_reel->play_cnt; i++)
     {
+        int o_in, o_out;
+
         _snprintf
         (
             file_origin, sizeof(file_origin),
@@ -458,14 +470,48 @@ void CExportDlg::OnBnClickedButtonStart()
             "mov"
         );
 
-        r = ctx->omc->appendTracks(0, file_origin,
-            m_reel->play_list[i].clip_in, m_reel->play_list[i].clip_out);
+        /* skip segments out of range */
+        if
+        (
+            m_in >= m_reel->play_list[i].mark_out
+            ||
+            m_out <= m_reel->play_list[i].mark_in
+        )
+            continue;
+
+        /* mark in inside of item */
+        if
+        (
+            m_reel->play_list[i].mark_in <= m_in
+            &&
+            m_in < m_reel->play_list[i].mark_out
+        )
+            o_in = m_in - m_reel->play_list[i].mark_in;
+        else
+            o_in = 0;
+
+        /* mark out inside of item */
+        if
+        (
+            m_reel->play_list[i].mark_in <= m_out
+            &&
+            m_out < m_reel->play_list[i].mark_out
+        )
+            o_out = m_reel->play_list[i].mark_out - m_out;
+        else
+            o_out = 0;
+
+        o_in = m_reel->play_list[i].clip_in + o_in;
+        o_out = m_reel->play_list[i].clip_out - o_out;
+        r = ctx->omc->appendTracks(0, file_origin, o_in, o_out);
     };
-    r = ctx->omc->setRange
+#if 0
+    r = ctx->omc->setRange(0, ~0);
     (
         theApp.m_ctl->get_mark_in(),
         theApp.m_ctl->get_mark_out()
     );
+#endif
 
     WaitForSingleObject(lock, INFINITE);
     this->ctx = ctx;

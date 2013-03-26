@@ -83,7 +83,7 @@ void mcs3_cb(void* cookie, int button, int value)
                 break;
 
             case MCS3_BUTTON_STOP:
-                ctx->m_ctl->oper_play_stop();
+                ctx->m_ctl->oper_play_record_stop();
                 break;
 
             case MCS3_BUTTON_PLAY:
